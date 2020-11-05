@@ -1,6 +1,6 @@
 --- 
-title: "A Minimal Book Example"
-author: "Sara Haman, Adam Lashley, Reilly Stanton, Benjamin Weisman"
+title: "An analysis of Cryptocurrency"
+author: "Timothy McCormack, Carolyn Herrera, Wei Chun Tien, "
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
@@ -8,8 +8,8 @@ documentclass: book
 bibliography: [book.bib, packages.bib]
 biblio-style: apalike
 link-citations: yes~
-github-repo: benjaminweisman/Data-Munging
-description: "An analysis of data from the College Scorecard API, which focuses on differences identified between institutions with R1 and R2 carnegie classifications. This project was completed to satisfy the requirements of a project assigned to students in the Fall 2020 Data Munging and Exploratory Data Analysis at New College of Florida."
+github-repo: KalaniStanton/RedditCryptoEDA
+description: ""
 ---
 
 # Preface {-}
