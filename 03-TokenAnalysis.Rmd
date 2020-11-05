@@ -1,0 +1,301 @@
+---
+title: "Token Analysis"
+output:
+  pdf_document: default
+  html_document: default
+---
+[In-Progress]
+
+```{r setup}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, echo = TRUE)
+# set to TRUE to run this on only one reference file
+debugging <- FALSE
+# this will expect the file or files to be in a subdirectory with the following name
+refsource <- "MungingProj2"
+dataDir <- "Proj2Data"
+workingDir <- refsource
+
+# prefixes for all File reads and writes
+# titles for tables
+titletext <- "RedditCrypto"
+srs = c("CryptoCurrency")
+
+`%notin%` <- Negate(`%in%`)
+
+Sys.time()
+```
+
+```{r packages, echo = TRUE, include = FALSE}
+library(tidytext)
+library(tidyverse)
+library(dplyr)
+library(stringr)
+library(knitr)
+library(RColorBrewer)
+library(DT)
+library(tidygraph)
+library(ggraph)
+library(tm)
+library(kableExtra)
+#install.packages("ggwordcloud")
+library(ggwordcloud)
+library(xtable)
+#install.packages("Hmisc")
+library(Hmisc)
+#install.packages("lubridate")
+library(lubridate)
+#install.packages("wordcloud")
+library(wordcloud)
+#install.packages("viridis")
+library(viridis)
+#install.packages("colorspace")
+library(colorspace)
+```
+
+# Import
+
+```{r import_submissions}
+#Submissions
+#Subms1G<- read.csv(paste0(dataDir, "/clean_data/1GComms.csv")) #token counts by pol_group
+#Subms2G<- read.csv("clean_data/2GSubm.csv") #token counts by 
+#TknsS<- read.csv(paste0(dataDir, "/SubmTkns.csv")) #token counts (full dataset)
+#Comments
+#Comms1G<- read.csv(paste0(dataDir, "/clean_data/1GComms.csv"))
+#Comms2G <- read.csv("clean_data/2GComms.csv")
+TknsC<- read.csv(paste0(dataDir, "/CommTkns.csv"))
+#Matrices
+#MtrxS <- read.csv("clean_data/SubMtrx.csv")
+#MtrxC <- read.csv(paste0(dataDir,"/CommMtrx.csv"))
+#MtrxU <- read.csv(paste0(dataDir, "/UserMtrx.csv"))
+```
+
+
+```{r social_clusters}
+# Compose comprehensive list of subreddit "communities "social clusters" under their affilliated spiritual beliefs
+Subreddits = srs
+paste0(Subreddits)
+```
+
+
+
+# Token Counts
+
+Token counts are done at several different levels. The first being word frequency within each subreddit, which allows for a comparison of common words across communitas. The second is word frequency within each subreddit page (i.e. "Top", "Controversial", "Hot"), which allows for a comparison of common words across strata within each communitas.
+
+```{r count}
+
+allCount <-TknsC %>%
+    #roup_by(subreddit) %>% #group words by affiliation label
+    count(word, sort = TRUE) #%>%
+    #ungroup()
+```
+
+
+## Most Frequent Tokens
+
+The following code show the top 25 most frequently occuring words within each subreddit.
+
+```{r top_25}
+sr_all_n25 <- allCount %>% #group_by(subreddit) %>%
+  top_n(25) %>%
+  ungroup()
+```
+
+# Wordclouds
+
+Wordclouds are then constructed using the top 50 words from each subreddit page.
+
+## All words (Submissions and Comments)
+```{r wc_allCount}
+#sr_allCount <- allCount %>% filter(!subreddit == "r/all [control]")
+sr_allWC <- allCount %>%
+  top_n(50) %>%
+  mutate(prop = n / max(n))
+
+color=diverge_hcl(length(sr_allWC$prop))[rank(sr_allWC$prop)]
+```
+
+
+```{r wordcloud1, warnings = FALSE, messages = FALSE}
+set.seed(29)
+ggplot(sr_allWC, aes(label = word, size = prop, color = prop)) +
+    geom_text_wordcloud_area(shape = 'circle', rm_outside = TRUE) +
+    scale_size_area(max_size = 30) +
+    #scale_colour_gradient2(low = "black", mid = "red4", high = "red", space = "Lab", aesthetics = "color") +
+    theme_minimal()
+
+ggsave("CC_wordcloud.pdf", device = "pdf", path = "CCViz", height = 10, width = 16)
+```
+
+# Correlations
+
+The correlation analyses measures similarity and dissimilarity accross our subreddits. Correlations are run on two variables from the data: `word` and `user`. The correlations of word use are done to identify the degree to which subreddits are using the same words as other subreddits. A significant correlation between the word use of 'athiest' and 'Christian' subreddits indicates that the words used by individuals within these subreddits are similiar. This similarity may indicate a common use of language by members of the two groups, however, given the "militant" nature of contemporary atheism (e.g. Dawkins, 2006 & Krauss, 2015) it is possible that linguistic similarity could be explained as a consequence of the same users appearing in both subreddits. Thus, a correlational analysis on user occurence within these subreddits reveals the degree to which users engage with both groups.
+
+## Language Correlations
+
+A correlation analysis on a matrix indicating word use across subreddits.
+
+```{r corrstarsl function, include = FALSE, echo = FALSE}
+#Pulled from https://gist.github.com/anhqle/5855936
+corstarsl <- function(x){ 
+  require(Hmisc) 
+  x <- as.matrix(x) 
+  R <- rcorr(x)$r 
+  p <- rcorr(x)$P 
+  
+  ## define notions for significance levels; spacing is important.
+  mystars <- ifelse(p < .001, "***", ifelse(p < .01, "** ", ifelse(p < .05, "* ", " ")))
+  
+  ## trunctuate the matrix that holds the correlations to two decimal
+  R <- format(round(cbind(rep(-1.11, ncol(x)), R), 2))[,-1] 
+  
+  ## build a new matrix that includes the correlations with their apropriate stars 
+  Rnew <- matrix(paste(R, mystars, sep=""), ncol=ncol(x)) 
+  diag(Rnew) <- paste(diag(R), " ", sep="") 
+  rownames(Rnew) <- colnames(x) 
+  colnames(Rnew) <- paste(colnames(x), "", sep="") 
+  
+  ## remove upper triangle
+  Rnew <- as.matrix(Rnew)
+  Rnew[upper.tri(Rnew, diag = TRUE)] <- ""
+  Rnew <- as.data.frame(Rnew) 
+  
+  ## remove last column and return the matrix (which is now a data frame)
+  Rnew <- cbind(Rnew[1:length(Rnew)-1])
+  return(Rnew) 
+}
+```
+
+
+### Submissions
+
+Correlations of token use in submissions across subreddits.
+
+```{r Submission Correlations}
+CorMtrxS <- round(cor(MtrxS[,2:9], method = "pearson"),3)
+submCorr<- corstarsl(CorMtrxS)
+
+
+
+kable(submCorr) %>%
+  kable_styling("striped", full_width = F)
+```
+
+### Comments
+
+Correlations of token use in comments across subreddits
+
+```{r Comment Correlations}
+CorMtrxC <- round(cor(MtrxC[,2:9], method = "pearson"),3)
+commCorr <- corstarsl(CorMtrxC)
+
+kable(commCorr) %>%
+  kable_styling("striped", full_width = F)
+```
+# User correlations
+
+Analysis of correlation between users demonstrates the degree to which users are present in both subreddits. A high correlation between two subreddits could partially explain the correlations of linguistic behavior between groups; i.e. users expressing the same linguistic behavior across the subreddits.
+
+## Dichotomous
+
+```{r}
+di_MtrxU <- MtrxU[,c(-1)] #remove names from user
+di_MtrxU[!is.na(di_MtrxU)] <- 1  #replace all non-NA values with 1 indicating presence of user
+di_MtrxU[is.na(di_MtrxU)] <- 0 #replace NA with 0 for correlation analysis
+```
+
+```{r}
+di_CorMtrxU <- round(cor(di_MtrxU, method = "pearson"),3)
+corstarsl(di_CorMtrxU)
+```
+
+```{r, echo = FALSE, eval = FALSE}
+di_MtrxU %>% filter(atheism == 1 & Christianity == 1)
+
+di_MtrxU %>% filter(control == 1 & atheism == 1)
+```
+
+## Continuous
+
+```{r}
+MtrxU[is.na(MtrxU)] <- 0
+```
+
+
+```{r}
+CorMtrxU <- round(cor(MtrxU[,2:9], method = "pearson"),3)
+UserCorDF <- corstarsl(CorMtrxU)
+```
+
+## Discussion of Correlations
+
+Atheism is distinct from agnosticism in that it is anti-religious, not simply irreligious. Thus, it can be expected that conversations within the Atheism subreddit are more likely to exist in opposition to religious communitas. As the most popular religion in the regions where reddit is most predominantly used, it is unsurprising that the religion most often discussed by atheists would be Christianity, thus leading to a correlation of .9 seen in our analysis (Timasheff, 1941). Aditionally, Reddit is an open platform that allows the users the freedom to engage with content in any communitas, regardless of whether or not they identify with it. This means that atheistic users can easily engage within religious subreddits, thus affecting our analysis of linguistic behavior at the level of collective consciousness. [^1]: This alludes to a futher consideration about the interdependence of consciousness. Atheism would not exist without a system to oppose, these individual's are unified in their opposition to Christianity. It is not unreasonable to assume that the same can be said for the other directon because this appears to be a ubiquitous phenomenon of collective consciousness; our groups are dependent on the existence of another, otherwise there would be no need to differentiate one from another.
+
+TF_IDF is a tool used to show distinct word usage across groups by taking the difference between the term frequency `tf` and inverse document frequency `idf`, ultimately revealing the tokens that are most unique to each subreddit.
+
+```{r Onegram tf-idf }
+#Create TF-IDF matrix for Controversial Submissions
+allIDF <- allCount %>%
+  bind_tf_idf(word, subreddit, n) %>% #construct tf_idf by affiliation label
+  arrange(desc(tf_idf)) %>% 
+  mutate(word = factor(word, levels = rev(unique(word))))
+```
+
+
+# TF-IDF
+
+The below figure shows that the religious communitas can be identified through the symbols presented in their distinguishing tokens. This methodology is useful for exploring the divergent symbolic identities of collective consciousnesses. The tf-ifd analysis below presents us with sets of names, concepts, and phrases that reference the symbolic systems of each religious identity. 
+
+```{r all tf_idf}
+allIDF %>%
+  group_by(subreddit) %>% 
+  top_n(10) %>% 
+  ungroup()%>%
+  ggplot(aes(word, tf_idf, fill = subreddit)) + geom_col(show.legend = FALSE) + labs(x = NULL, y = "tf-idf") + facet_wrap(~subreddit, ncol = 2, scales = "free_y") + coord_flip() + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggsave("tf_idf.pdf", device = "pdf", path = "pdpViz", height = 8, width = 6)
+```
+
+
+
+
+#Posts over time
+
+```{r split_dates}
+TknsByDate <- TknsC %>%
+  separate(created, c("created", "time"), " ") %>%
+  mutate(created = ymd(created)) %>%
+  mutate_at(vars(created), funs(year, month, day))
+```
+
+```{r month_count}
+TknsByMonth <-TknsByDate %>%
+    filter(year > 2015) %>%
+    mutate(Month = make_date(year, month))
+
+monthCount <- TknsByMonth %>%
+    group_by(subreddit, year, month) %>% #group words by affiliation label
+    count(word, sort = TRUE) %>% #count and create column 'n'
+    top_n(10, n) %>%
+    ungroup()
+
+monthCount <- monthCount %>%
+    group_by(year, month, subreddit) %>%
+    mutate(prop = n / max(n))
+    
+table(monthCount$subreddit)
+```
+
+```{r}
+ggplot(monthCount, aes(label = word, size = prop, color = prop)) +
+    geom_text_wordcloud_area(rm_outside = FALSE) +
+    scale_size_area(max_size = 20) +
+    #scale_colour_gradient2(low = "black", mid = "red4", high = "red", space = "Lab", aesthetics = "color") +
+    theme_minimal() + 
+    facet_grid(vars(year), vars(month))
+
+ggsave("CC_timeline.pdf", device = "pdf", path = "CCViz", height = 10, width = 16)
+```
+
+
+

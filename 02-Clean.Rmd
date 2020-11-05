@@ -1,0 +1,435 @@
+# Data Import and Clean
+
+```{r setup}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, echo = TRUE)
+# set to TRUE to run this on only one reference file
+debugging <- FALSE
+# this will expect the file or files to be in a subdirectory with the following name
+refsource <- "MungingProj2"
+dataDir <- "Proj2Data"
+workingDir <- refsource
+
+# prefixes for all File reads and writes
+# titles for tables
+titletext <- "RedditCrypto"
+srs = c("CryptoCurrency")
+
+`%notin%` <- Negate(`%in%`)
+
+Sys.time()
+```
+
+```{r, message = FALSE}
+library(tidyverse)
+library(tidytext)
+library(textclean)
+library(dplyr)
+library(stringr)
+library(knitr)
+library(wordcloud)
+library(kableExtra)
+library(DT)
+library(tidygraph)
+library(ggraph)
+library(tm)
+```
+
+### Import Data
+
+```{r}
+subm_fnames <- list.files(dataDir, pattern = "*_submissions.csv", 
+                        full.names = TRUE)
+comm_fnames <- list.files(dataDir, pattern = "*_comments.csv", 
+                        full.names = TRUE)
+for (i in 1:length(subm_fnames)) 
+  assign(srs[i], read.csv(subm_fnames[i]))
+SubmData <- CryptoCurrency
+#SubmData<- rbind()
+
+for (i in 1:length(comm_fnames)) 
+  assign(srs[i], read.csv(comm_fnames[i]))
+CommData <- CryptoCurrency
+#CommData<- rbind()
+```
+
+### Separate
+
+The data are classified according to the subreddits (n = 8) that each submission belongs to. 
+```{r social_clusters}
+# Compose comprehensive list of subreddit "communities "social clusters" under their affilliated spiritual beliefs
+Subreddits = srs
+```
+
+
+```{r}
+old_srNames <- unique(SubmData$subreddit)
+
+SubmData <- SubmData %>%
+    mutate(
+      x = case_when(
+        .$subreddit == srs[1] ~ "r/CryptoCurrency")
+      ) %>%
+  ungroup()
+```
+
+## View data
+
+```{r}
+s <- SubmData %>% filter(!subreddit == "r/all")
+
+submnums <- table(s$subreddit)
+SubmNums <- as.data.frame(submnums, .name_repair = "minimal")
+colnames(SubmNums)[1] <- "Subreddit"
+ggplot(SubmNums, aes(x = Subreddit, y = Freq, fill = Subreddit)) + geom_bar(stat = "identity") + scale_y_continuous(name="# of Submissions by Subreddit", labels = scales::comma)
+rm(s)
+```
+
+
+```{r}
+c <- CommData %>% filter(!subreddit == "r/all")
+
+commnums <- table(c$subreddit)
+CommNums <- as.data.frame(commnums, .name_repair = "minimal")
+colnames(CommNums)[1] <- "Subreddit"
+ggplot(CommNums, aes(x = Subreddit, y = Freq, fill = Subreddit)) + geom_bar(stat = "identity") + scale_y_continuous(name="# of Comments by Subreddit (from 300 posts each)", labels = scales::comma)
+```
+
+```{r, include = FALSE}
+#r_data <- cbind(SRData, CommNums[c(1:4,6:8),])
+#r_data <- cbind(Subreddits[-c(8)], r_data)
+#rownames(r_data) <- Subreddits[-c(8)]
+#colnames(r_data)[c(3,4,7)] <- c("Title", "No. of Subscribers", "No. of #Comments")
+```
+
+```{r, include = FALSE}
+#kable(r_data[c(3:4,7)],) %>%
+#  kable_styling("striped", full_width = F)
+```
+
+
+*Submissions* from each subreddit:
+
+```{r, include = FALSE}
+table(SubmData$subreddit)
+```
+
+*Comments* in each subreddit:
+
+```{r, include = FALSE}
+table(CommData$subreddit)
+```
+
+
+### Clean
+
+To ensure that our data accurately represent activity within the communitas, we want to ensure that each observation is a unique instance of engagement. Reposts tend to be common on reddit, so using a `distinct()` function on the text column will remove any duplicate posts. Additionally, any posts that are removed from the subreddits return  an `NA` value in `user` column, thus we can remove deleted comments by filtering out all non `user == NA`.
+
+```{r clean submissions}
+#Clean
+Encoding(SubmData$text) <- "UTF-8"
+
+Submissions <- SubmData %>%
+  group_by(user) %>%
+    filter(!is.na(user)) %>% # Take out deleted comments
+    ungroup() %>%
+    distinct(text, .keep_all = TRUE) #remove duplicate submissions
+
+paste("Removed", nrow(SubmData) - nrow(Submissions),"submissions.")
+```
+
+### Tokenize
+
+The analysis of langauge begins by quantifying the presence of words in each Subm, through the process of *tokenization*. *Tokens* are discrete strings of words or characters that can be isolated as n-grams; with *n* pertaining to the number of words in each token. Tokens are pulled from the body of text that is most informative for the purposes of analysis. For submissions, the informative text is the *title* of the submission, which contains information on topics; whereas, for comments, the informative text is the `comment` itself. 
+
+```{r tokenize_submissions}
+data(stop_words)
+
+SubmissionTkns <- Submissions %>%
+  group_by(subreddit) %>%
+    unnest_tokens(word, text) %>%
+    anti_join(stop_words) %>%
+    ungroup()
+
+#G2Subm <- Submissions %>%
+#    group_by(subreddit) %>%
+#    unnest_tokens(bigram, text, token = "ngrams", n = 2, n_min = #2) %>% #repeat above as bigram
+#    ungroup()
+
+```
+
+#### Clean Tokens
+
+As part of the tokenization process for submissions, we remove stop words (e.g. "and", "a", "the") because we are interested in using our tokens to identify prevalent topics of discussion and attitudes in the religiously affiliated social clusters. In contrast, stop words are not removed from text data in comments because they are useful in the analysis of linguistic sentiment and behavior.
+
+##### 1-grams (Clean)
+
+```{r}
+#Create object for numbers, so that we can remove them from the data
+nums <- SubmissionTkns %>% filter(str_detect(word, "^[0-9]")) %>% select(word) %>% unique() #Source: https://richpauloo.github.io/2017-12-29-Using-tidytext-to-make-word-clouds/
+
+SubmissionTkns <- SubmissionTkns %>%
+    #group_by(pol_group) %>%
+    #anti_join(stop_words) %>% #take out stop words (i.e. 'a', 'an', 'of', 'the')
+    anti_join(nums, by = "word") %>%
+    filter(!grepl("_", .$word))
+
+G1Subm <- SubmissionTkns
+
+```
+
+##### 2-grams (Clean)
+
+2-gram code is not used in analysis due to unsolved cleaning error.
+
+```{r}
+#G2Subm_separated <- G2Subm %>% #Separate bigrams to remove stopwords and transitional phrases
+#  separate(bigram, c("word1", "word2"), sep = " ") #run boolean functions for cleaning on `word1` and `word2`
+
+#G2Subm_filtered <- G2Subm_separated %>% 
+#  filter(!word1 %in% stop_words$word) %>% #remove stop words
+#  filter(!word2 %in% stop_words$word) %>%
+#  filter(!word1 == "NA") %>% #remove anomylous strings
+#  filter(!word2 == "NA") %>%
+#  filter(!word1 %in% nums) %>% #remove numbers
+#  filter(!word2 %in% nums)
+
+#G2Subm <- G2Subm_filtered %>% 
+#  unite(bigram, word1, word2, sep = " ")#reunify cleaned word columns
+
+#G2Subm <- G2Subm[!grepl("_", G2Subm$bigram),]
+
+#rm(G2Subm_separated)
+#rm(G2Subm_filtered)
+```
+
+#### Count
+
+Following tokenization, the presence of each n-gram is tallied within each communitas. The tallies are then sorted to show what the most frequently occuring words are in each category.
+
+```{r}
+G1SubmCount <- G1Subm %>%
+    group_by(subreddit) %>% #group words by affiliation label
+    count(word, sort = FALSE) %>% #count and create column 'n'
+    ungroup()
+
+#G2SubmCount <- G2Subm %>% #repeat for bigrams
+#    group_by(subreddit) %>%
+#    count(bigram, sort = FALSE) %>%
+#    ungroup() 
+
+rm(G1Subm)
+#rm(G2Subm)
+```
+
+## Comments 
+
+The cleaning and tokenization process for comments is similar to that of submissions; however, a few extra steps must be taken considering the casual and conversational nature of reddit comments.
+
+**NEED TO DO:** Additionally, the number of comments on each submission varies, so it will be important to standardize word counts across subreddits..
+
+
+
+
+### Clean
+
+```{r}
+Encoding(CommData$text) <- "UTF-8"
+
+Comments <- CommData %>%
+  group_by(user) %>%
+    filter(!is.na(user)) %>% # Take out deleted comments
+    ungroup() %>%
+    distinct(text, .keep_all = TRUE) #remove duplicate comments
+
+paste("Removed", nrow(CommData) - nrow(Comments),"comments")
+```
+
+
+```{r rm urls}
+url_regex <- "http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
+
+#rmURLComm <- str_remove_all(NoURLComm, url_regex)
+#rmURLComm <- intersect(rmURLComm, NoURLComm)#verify that function works
+Comments$text <-stringi::stri_trans_general(Comments$text, "latin-ascii") #converts text encoding, otherwise the tokenizer won't retain contractions
+Comments$text <- str_remove_all(Comments$text, url_regex)
+#Comments$text <- str_replace_all(Comments$text, "[^[:alnum:]]", " ")
+```
+
+### Tokenize
+
+```{r}
+#tokenize
+G1Comm <- Comments %>%
+  unnest_tokens(word, text) #%>% #parses title text into comments
+    #ungroup()
+
+#G2Comm <- Comments %>%
+#    #group_by(subreddit) %>%
+#    unnest_tokens(bigram, text, token = #"ngrams", n = 2, n_min = 2) #%>% #repeat above as bigram
+    #ungroup()
+```
+
+##### 1-grams
+
+```{r}
+#Create object for numbers, so that we can remove them from the data
+nums <- G1Comm %>% filter(str_detect(word, "^[0-9]")) %>% select(word) %>% unique() #Source: https://richpauloo.github.io/2017-12-29-Using-tidytext-to-make-word-clouds/
+
+fknBots <- filter(G1Comm, word == "bot")
+
+data(stop_words)
+
+CommTkns <- G1Comm %>%
+    #group_by(pol_group) %>%
+    anti_join(stop_words) %>% #take out stop words (i.e. 'a', 'an', 'of', 'the')
+    anti_join(nums, by = "word") %>%
+    filter(user %notin% fknBots$user) %>%
+    filter(!grepl("_", .$word))
+    #ungroup()
+
+G1Comm <- CommTkns
+
+paste("Removed", nrow(CommData) - nrow(Comments),"tokens")
+```
+
+##### 2-grams (Clean)
+
+2-gram code is not used in analysis due to unsolved cleaning error.
+
+```{r}
+#G2Comm_separated <- G2Comm %>% #Separate bigrams to remove stopwords and transitional phrases
+#  separate(bigram, c("word1", "word2"), sep = " ") #run boolean functions for cleaning on `word1` and `word2`
+
+#G2Comm_filtered <- G2Comm_separated %>% 
+#  filter(!word1 %in% stop_words$word) %>% #remove stop words
+#  filter(!word2 %in% stop_words$word) %>%
+#  filter(!word1 == "NA") %>% #remove anomylous strings
+#  filter(!word2 == "NA") %>%
+#  filter(!word1 %in% nums) %>% #remove numbers
+#  filter(!word2 %in% nums)
+
+#G2Comm <- G2Comm_filtered %>% 
+#  unite(bigram, word1, word2, sep = " ")#reunify cleaned word columns
+
+#G2Comm <- G2Comm[!grepl("_", G2Comm$bigram),]
+
+#rm(G2Comm_separated)
+#rm(G2Comm_filtered)
+```
+
+#### Count Tokens
+
+```{r}
+G1CommCount <- G1Comm %>%
+    #group_by(subreddit) %>% #group words by affiliation label
+    count(subreddit, word, sort = FALSE) %>% #count and create column 'n'
+    filter(word == "don") %>% #Anomalous artifact of "don't"
+    ungroup()
+
+#G2CommCount <- G2Comm %>% #repeat for bigrams
+#    group_by(subreddit) %>%
+#    count(bigram, sort = FALSE) %>%
+#    ungroup() 
+
+rm(G1Comm)
+#rm(G2Comm)
+```
+
+# Create Matrices
+
+*Posts/Text Data*: Using our one-gram tokens as row names, we can manipulate the data frame into a matrix, which is more a more versatile structure for the sake of analyzing correlations.
+
+*Users*: A matrix of user engagement by subreddit would show the level of cross interaction between these subreddits.
+
+###Comments
+
+```{r CommentMatrix}
+CommMtrx <- spread(G1CommCount, subreddit, n) #create columns for data
+CommMtrx[is.na(CommMtrx)] <- 0  #replace NA values with 0
+CommMtrx
+```
+
+### Submissions
+
+```{r SubmMatrix}
+SubMtrx <- spread(G1SubmCount, subreddit, n) #create columns for data
+SubMtrx[is.na(SubMtrx)] <- 0  #replace NA values with 0
+SubMtrx
+```
+
+### Users
+
+```{r User_df}
+userC <- Comments %>%
+  select(subreddit, user)
+```
+
+```{r User_count}
+userCount <- userC %>%
+  group_by(subreddit) %>%
+  count(user) %>%
+  ungroup()
+```
+
+```{r user_matrix}
+UserMtrx <- spread(userCount, subreddit, n)  #create columns for counts by subreddit
+UserMtrx #user matrix data will be cleaned later because of variations in the approach to analyze cross interaction
+```
+
+
+# LIWC Cleaning
+
+
+## Submission bag-of-words
+
+As topic-oriented arenas for social engagement, the comment threads of submissions on these subreddits offer insights into the semantic tendencies of each subreddit. To collect this data, I aggregated all comments into a single document for each submission, then will run these scores through the LIWC software.
+
+```{r}
+#LIWCbyPost <- aggregate(text ~ subreddit*post, Comments,paste,collapse=" ")
+#dim(LIWCbyPost)
+```
+
+## Subreddit bag-of-words
+
+Similar to the submission LIWC document, the subreddit aggregates all comments from submissions, but are aggregated into a document for each subreddit. The data are then analyzed descriptively, focusing on the semantic content of comments as contributions to a collectively shaped identity. 
+
+```{r}
+#LIWCbySubreddit <- aggregate(text ~ subreddit, Comments,paste,collapse=" ")
+#dim(LIWCbySubreddit)
+```
+
+# Export
+
+```{r export_submissions}
+#write.csv(G1SubmCount, "clean_data/1GSubm.csv", row.names = FALSE)
+#write.csv(G2SubmCount, "clean_data/2GSubm.csv", row.names = FALSE)
+write.csv(SubmissionTkns, paste0(dataDir, "/SubmTkns.csv"), row.names = FALSE)
+```
+
+```{r export_comments}
+write.csv(CommTkns, paste0(dataDir, "/CommTkns.csv"), row.names = FALSE)
+```
+
+```{r export_matrices}
+#write.csv(SubMtrx, paste0(dataDir, "/SubMtrx.csv"), row.names = FALSE)
+write.csv(CommMtrx, paste0(dataDir, "/CommMtrx.csv"), row.names = FALSE)
+#write.csv(UserMtrx, paste0(dataDir, "/UserMtrx.csv"), row.names = FALSE)
+```
+
+```{r export_LIWC}
+#write.csv(LIWCbyPost, "LIWC_data/export/LIWC_Posts.csv")
+#write.csv(LIWCbyPage, "LIWC_data/export/LIWC_Page.csv")
+#write.csv(LIWCbyComment, "LIWC_data/export/LIWC_Comment.csv")
+#write.csv(LIWCbySubreddit, "LIWC_data/export/LIWC_Subreddit.csv")
+```
+
+# Works Cited
+
+Boe B (2014). PRAW: The Python Reddit API Wrapper. 2012-, https://github.com/praw-dev/praw/ [Online; accessed 2017-09-29].
+
+Silge J, Robinson D (2016). “tidytext: Text Mining and Analysis Using Tidy Data Principles in R.” JOSS, 1(3). doi: 10.21105/joss.00037, http://dx.doi.org/10.21105/joss.00037. 
+
+```{r}
+dim(Comments)
+```
+
