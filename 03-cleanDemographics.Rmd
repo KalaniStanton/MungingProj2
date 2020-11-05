@@ -1,0 +1,43 @@
+
+# Data Clean
+
+```{r}
+
+library(tidyverse)
+
+```
+
+
+```{r}
+
+dem <- read.csv("Proj1Data/Demographics15to19.csv")
+dem_clean <- dem[,-c(1, 17, 20:24)] %>%
+  rename("university" = instnm,
+  "r_status" = ccbasic, 
+  "state" = stabbr, 
+  "white" = ugds_white, 
+  "black" = ugds_black, 
+  "hispanic" = ugds_hisp, 
+  "asian" = ugds_asian, 
+  "indigenous" = ugds_aian, 
+  "nhpi" = ugds_nhpi, 
+  "nra" = ugds_nra, 
+  "unknown" = ugds_unkn) %>% 
+  drop_na(black)
+
+dem_clean$r_status <- recode(dem_clean$r_status, `15` = 'R1', `16` = "R2")
+
+dem_clean <- dem_clean %>%  
+  group_by(r_status) %>%
+  mutate_at(c("female", "first_gen", "poverty_rate", "veteran", "unemp_rate"), funs(ifelse(is.na(.), mean(., na.rm = TRUE),.)))
+
+```
+
+
+```{r}
+
+write.csv(dem_clean, "cleanDemographics1519.csv")
+
+```
+
+

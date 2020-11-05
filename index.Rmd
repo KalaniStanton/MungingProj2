@@ -1,0 +1,22 @@
+--- 
+title: "A Minimal Book Example"
+author: "Sara Haman, Adam Lashley, Reilly Stanton, Benjamin Weisman"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes~
+github-repo: benjaminweisman/Data-Munging
+description: "An analysis of data from the College Scorecard API, which focuses on differences identified between institutions with R1 and R2 carnegie classifications. This project was completed to satisfy the requirements of a project assigned to students in the Fall 2020 Data Munging and Exploratory Data Analysis at New College of Florida."
+---
+
+# Preface {-}
+
+```{r include=FALSE}
+# automatically create a bib database for R packages
+knitr::write_bib(c(
+  .packages(), 'bookdown', 'knitr', 'rmarkdown'
+), 'packages.bib')
+```

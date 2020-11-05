@@ -1,0 +1,42 @@
+# Final Words
+
+```{r}
+library(plotly)
+
+g <- list(
+  scope = 'usa',
+  projection = list(type = 'albers usa'),
+  lakecolor = toRGB('white')
+)
+
+avgs <- distinct(FacSalary)
+
+plot_geo() %>%
+  add_trace(
+    z = ~avgs$avgSal,
+    span = I(0),
+    colorscale = 'matter',
+    locations = avgs$stabbr, 
+    locationmode = 'USA-states'
+  ) %>%
+  colorbar(title = NULL) %>%
+  layout(geo = g, title = "Avg. Faculty Salary by State (in USD)")
+```
+
+```{r}
+
+avgDM <- distinct(debtMedian)
+
+plot_geo() %>%
+  add_trace(
+    z = ~avgDM$avgDebt,
+    span = I(0),
+    colorscale = 'viridis',
+    locations = avgDM$state, 
+    locationmode = 'USA-states'
+  ) %>%
+  colorbar(title = NULL) %>%
+  layout(geo = g, title = "Avg. Faculty Salary by State (in USD)")
+```
+
+

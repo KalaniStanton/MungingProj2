@@ -1,0 +1,176 @@
+# Analysis
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Import
+```{r, message=FALSE}
+library(moments)
+library(dplyr)
+library(tidyr)
+library(stats)
+library(sjstats)
+library(ggplot2)
+```
+
+```{r}
+fin <- read.csv('Proj1Data/Financials15to19.csv')
+temp <- read.csv("Proj1Data/Demographics15to19.csv")
+death <- read.csv("Proj1Data/Death15to19.csv")
+```
+
+## Transform Datasets
+```{r}
+dem <- temp[,-(20:24)]
+finR <- fin[fin$ccbasic == c(15,16) & fin$X < 267,]
+finR1 <- fin[fin$ccbasic == 15 & fin$X < 267,]
+finR2 <- fin[fin$ccbasic == 16 & fin$X < 267,]
+demR <- dem[dem$ccbasic == c(15,16) & dem$X < 267,]
+demR1 <- dem[dem$ccbasic == 15 & dem$X < 267,]
+demR2 <- dem[dem$ccbasic == 16 & dem$X < 267,]
+```
+
+## Descriptive time!
+```{r}
+# Demographics
+summary(demR1$ugds_white)
+skewness(demR1$ugds_white)
+kurtosis(demR1$ugds_white)
+
+summary(demR2$ugds_white)
+skewness(demR2$ugds_white)
+kurtosis(demR2$ugds_white)
+
+# Cost
+print('Tuition cost')
+summary(finR1$costt4_a)
+hist(finR1$costt4_a)
+summary(finR2$costt4_a)
+hist(finR2$costt4_a)
+
+# Students debt
+print('Student debt')
+summary(finR1$grad_debt_mdn)
+hist(finR1$grad_debt_mdn)
+summary(finR2$grad_debt_mdn)
+hist(finR2$grad_debt_mdn)
+
+# Unemployment
+print('Unemployment Rate')
+summary(finR1$unemp_rate)
+hist(finR1$unemp_rate)
+summary(finR2$unemp_rate)
+hist(finR2$unemp_rate)
+```
+
+# Wilcox for skewed bois
+```{r}
+# R1 associated with student outcomes
+# debt, skewed to all hell so non parametric t-test.  
+wilcox.test(formula=finR$grad_debt_mdn~finR$ccbasic)
+# debt for R2 unis significantly differed from R1 students.
+
+# non-working
+t.test(finR$unemp_rate~finR$ccbasic)
+```
+
+```{r}
+# cost differences between R1, R2.
+
+# t.test(finR$costt4_a~finR$ccbasic)
+
+# Cant do a t-test cause of the bimodal abomination
+
+# Average annual R1 tuition cost: 41,571.97
+# Average annual R2 tuition cost: 33,958.16
+```
+
+```{r}
+# white people proportion and unemployment
+
+cor(demR$ugds_white, finR$unemp_rate, use = 'complete.obs')
+
+# results: White proportion is negatively associated with unemployment (r = -0.49)
+```
+
+## Main model
+```{r}
+ggplot(finR, aes(unemp_rate, demR$ugds_white,colour=ccbasic)) + geom_point() + geom_smooth(method = "lm")
+```
+
+```{r}
+# 3 White proportion moderates unemployment outcomes. 
+predictor <- finR$ccbasic
+moderator <- demR$ugds_white
+interaction <- predictor * moderator
+outcome <- finR$unemp_rate
+
+wlm <- lm(formula = outcome ~ predictor + moderator + interaction)
+summary(wlm)
+```
+
+### Decomposition
+
+#### Simple model
+```{r}
+predictor <- finR$ccbasic
+outcome <- finR$unemp_rate
+simplelm <- lm(formula = outcome ~ predictor)
+summary(simplelm)
+```
+
+#### Moderator direct effect
+```{r}
+predictor <- demR$ugds_white
+outcome <- finR$unemp_rate
+moderatorlm <- lm(formula = outcome ~ predictor)
+summary(moderatorlm)
+```
+
+#### Interaction Effect
+```{r}
+predictor <- finR$ccbasic
+moderator <- demR$ugds_white
+interaction <- predictor * moderator
+outcome <- finR$unemp_rate
+
+interactionlm <- lm(formula = outcome ~ interaction)
+summary(moderatorlm)
+```
+
+```{r}
+# cost differences between R1, R2.
+
+# t.test(finR$costt4_a~finR$ccbasic)
+
+# Cant do a t-test cause of the bimodal abomination
+
+# Average annual R1 tuition cost: 41,571.97
+# Average annual R2 tuition cost: 33,958.16
+```
+
+```{r}
+# white people proportion and unemployment
+
+cor(demR$ugds_white, finR$unemp_rate, use = 'complete.obs')
+
+# results: White proportion is negatively associated with unemployment (r = -0.49)
+```
+
+```{r}
+# 3 White proportion moderates unemployment outcomes. 
+predictor <- finR$ccbasic
+moderator <- demR$ugds_white
+interaction <- predictor * moderator
+outcome <- finR$unemp_rate
+
+wlm <- lm(formula = outcome ~ predictor + moderator + interaction)
+wlm
+plot(predictor, outcome, type="n")
+abline(-6.5218, 0.67)
+#abline(y, x, lty=2, col="red")
+
+#points(predictor[finR$ccbasic==15], outcome[finR$ccbasic==16])
+# points(predictor[race==1], outcome[race==1], col="red")
+```
