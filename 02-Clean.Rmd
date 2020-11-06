@@ -147,7 +147,6 @@ data(stop_words)
 SubmissionTkns <- Submissions %>%
   group_by(subreddit) %>%
     unnest_tokens(word, text) %>%
-    anti_join(stop_words) %>%
     ungroup()
 
 #G2Subm <- Submissions %>%
@@ -168,8 +167,7 @@ As part of the tokenization process for submissions, we remove stop words (e.g. 
 nums <- SubmissionTkns %>% filter(str_detect(word, "^[0-9]")) %>% select(word) %>% unique() #Source: https://richpauloo.github.io/2017-12-29-Using-tidytext-to-make-word-clouds/
 
 SubmissionTkns <- SubmissionTkns %>%
-    #group_by(pol_group) %>%
-    #anti_join(stop_words) %>% #take out stop words (i.e. 'a', 'an', 'of', 'the')
+    anti_join(stop_words, by = "word") %>%
     anti_join(nums, by = "word") %>%
     filter(!grepl("_", .$word))
 
