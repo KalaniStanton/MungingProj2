@@ -34,7 +34,7 @@ library(ggraph)
 library(tm)
 ```
 
-### Import Data
+## Import Data
 
 ```{r}
 subm_fnames <- list.files(dataDir, pattern = "*_submissions.csv", 
@@ -66,7 +66,7 @@ old_srNames <- unique(SubmData$subreddit)
 
 SubmData <- SubmData %>%
     mutate(
-      x = case_when(
+      subreddit = case_when(
         .$subreddit == srs[1] ~ "r/CryptoCurrency")
       ) %>%
   ungroup()
@@ -137,7 +137,7 @@ Submissions <- SubmData %>%
 paste("Removed", nrow(SubmData) - nrow(Submissions),"submissions.")
 ```
 
-### Tokenize
+## Submissions
 
 The analysis of langauge begins by quantifying the presence of words in each Subm, through the process of *tokenization*. *Tokens* are discrete strings of words or characters that can be isolated as n-grams; with *n* pertaining to the number of words in each token. Tokens are pulled from the body of text that is most informative for the purposes of analysis. For submissions, the informative text is the *title* of the submission, which contains information on topics; whereas, for comments, the informative text is the `comment` itself. 
 
@@ -157,7 +157,7 @@ SubmissionTkns <- Submissions %>%
 
 ```
 
-#### Clean Tokens
+## Clean
 
 As part of the tokenization process for submissions, we remove stop words (e.g. "and", "a", "the") because we are interested in using our tokens to identify prevalent topics of discussion and attitudes in the religiously affiliated social clusters. In contrast, stop words are not removed from text data in comments because they are useful in the analysis of linguistic sentiment and behavior.
 
@@ -202,7 +202,7 @@ G1Subm <- SubmissionTkns
 #rm(G2Subm_filtered)
 ```
 
-#### Count
+### Count
 
 Following tokenization, the presence of each n-gram is tallied within each communitas. The tallies are then sorted to show what the most frequently occuring words are in each category.
 
@@ -221,7 +221,7 @@ rm(G1Subm)
 #rm(G2Subm)
 ```
 
-## Comments 
+# Comments 
 
 The cleaning and tokenization process for comments is similar to that of submissions; however, a few extra steps must be taken considering the casual and conversational nature of reddit comments.
 
@@ -248,11 +248,9 @@ paste("Removed", nrow(CommData) - nrow(Comments),"comments")
 ```{r rm urls}
 url_regex <- "http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
 
-#rmURLComm <- str_remove_all(NoURLComm, url_regex)
-#rmURLComm <- intersect(rmURLComm, NoURLComm)#verify that function works
 Comments$text <-stringi::stri_trans_general(Comments$text, "latin-ascii") #converts text encoding, otherwise the tokenizer won't retain contractions
+
 Comments$text <- str_remove_all(Comments$text, url_regex)
-#Comments$text <- str_replace_all(Comments$text, "[^[:alnum:]]", " ")
 ```
 
 ### Tokenize
@@ -260,7 +258,7 @@ Comments$text <- str_remove_all(Comments$text, url_regex)
 ```{r}
 #tokenize
 G1Comm <- Comments %>%
-  unnest_tokens(word, text) #%>% #parses title text into comments
+  unnest_tokens(word, text) # %>%
     #ungroup()
 
 #G2Comm <- Comments %>%
@@ -269,7 +267,7 @@ G1Comm <- Comments %>%
     #ungroup()
 ```
 
-##### 1-grams
+#### 1-grams
 
 ```{r}
 #Create object for numbers, so that we can remove them from the data
@@ -292,7 +290,7 @@ G1Comm <- CommTkns
 paste("Removed", nrow(CommData) - nrow(Comments),"tokens")
 ```
 
-##### 2-grams (Clean)
+#### 2-grams (Clean)
 
 2-gram code is not used in analysis due to unsolved cleaning error.
 
@@ -317,13 +315,12 @@ paste("Removed", nrow(CommData) - nrow(Comments),"tokens")
 #rm(G2Comm_filtered)
 ```
 
-#### Count Tokens
+### Count
 
 ```{r}
 G1CommCount <- G1Comm %>%
     #group_by(subreddit) %>% #group words by affiliation label
     count(subreddit, word, sort = FALSE) %>% #count and create column 'n'
-    filter(word == "don") %>% #Anomalous artifact of "don't"
     ungroup()
 
 #G2CommCount <- G2Comm %>% #repeat for bigrams
@@ -394,8 +391,8 @@ As topic-oriented arenas for social engagement, the comment threads of submissio
 Similar to the submission LIWC document, the subreddit aggregates all comments from submissions, but are aggregated into a document for each subreddit. The data are then analyzed descriptively, focusing on the semantic content of comments as contributions to a collectively shaped identity. 
 
 ```{r}
-#LIWCbySubreddit <- aggregate(text ~ subreddit, Comments,paste,collapse=" ")
-#dim(LIWCbySubreddit)
+#SAbySubreddit <- aggregate(text ~ subreddit, Comments,paste,collapse=" ")
+#dim(SAbySubreddit)
 ```
 
 # Export
@@ -411,17 +408,11 @@ write.csv(CommTkns, paste0(dataDir, "/CommTkns.csv"), row.names = FALSE)
 ```
 
 ```{r export_matrices}
-#write.csv(SubMtrx, paste0(dataDir, "/SubMtrx.csv"), row.names = FALSE)
+write.csv(SubMtrx, paste0(dataDir, "/SubMtrx.csv"), row.names = FALSE)
 write.csv(CommMtrx, paste0(dataDir, "/CommMtrx.csv"), row.names = FALSE)
-#write.csv(UserMtrx, paste0(dataDir, "/UserMtrx.csv"), row.names = FALSE)
+write.csv(UserMtrx, paste0(dataDir, "/UserMtrx.csv"), row.names = FALSE)
 ```
 
-```{r export_LIWC}
-#write.csv(LIWCbyPost, "LIWC_data/export/LIWC_Posts.csv")
-#write.csv(LIWCbyPage, "LIWC_data/export/LIWC_Page.csv")
-#write.csv(LIWCbyComment, "LIWC_data/export/LIWC_Comment.csv")
-#write.csv(LIWCbySubreddit, "LIWC_data/export/LIWC_Subreddit.csv")
-```
 
 # Works Cited
 

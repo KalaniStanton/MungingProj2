@@ -1,9 +1,4 @@
----
-title: "Token Analysis"
-output:
-  pdf_document: default
-  html_document: default
----
+
 [In-Progress]
 
 ```{r setup}
@@ -109,7 +104,7 @@ Wordclouds are then constructed using the top 50 words from each subreddit page.
 ```{r wc_allCount}
 #sr_allCount <- allCount %>% filter(!subreddit == "r/all [control]")
 sr_allWC <- allCount %>%
-  top_n(50) %>%
+  top_n(100) %>%
   mutate(prop = n / max(n))
 
 color=diverge_hcl(length(sr_allWC$prop))[rank(sr_allWC$prop)]
@@ -274,13 +269,13 @@ TknsByMonth <-TknsByDate %>%
     mutate(Month = make_date(year, month))
 
 monthCount <- TknsByMonth %>%
-    group_by(subreddit, year, month) %>% #group words by affiliation label
+    group_by(subreddit,year, month) %>% #group words by affiliation label
     count(word, sort = TRUE) %>% #count and create column 'n'
     top_n(10, n) %>%
     ungroup()
 
 monthCount <- monthCount %>%
-    group_by(year, month, subreddit) %>%
+    group_by(subreddit,year, month) %>%
     mutate(prop = n / max(n))
     
 table(monthCount$subreddit)
@@ -288,13 +283,13 @@ table(monthCount$subreddit)
 
 ```{r}
 ggplot(monthCount, aes(label = word, size = prop, color = prop)) +
-    geom_text_wordcloud_area(rm_outside = FALSE) +
+    geom_text_wordcloud_area(rm_outside = TRUE) +
     scale_size_area(max_size = 20) +
     #scale_colour_gradient2(low = "black", mid = "red4", high = "red", space = "Lab", aesthetics = "color") +
     theme_minimal() + 
     facet_grid(vars(year), vars(month))
 
-ggsave("CC_timeline.pdf", device = "pdf", path = "CCViz", height = 10, width = 16)
+ggsave("CC_timeline.pdf", device = "pdf", path = "CCViz", height = 12, width = 20)
 ```
 
 
