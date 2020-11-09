@@ -80,7 +80,7 @@ Token counts are done at several different levels. The first being word frequenc
 ```{r count}
 
 allCount <-TknsC %>%
-    #roup_by(subreddit) %>% #group words by affiliation label
+    group_by(subreddit) %>% #group words by affiliation label
     count(word, sort = TRUE) #%>%
     #ungroup()
 ```
@@ -248,7 +248,7 @@ allIDF %>%
   ungroup()%>%
   ggplot(aes(word, tf_idf, fill = subreddit)) + geom_col(show.legend = FALSE) + labs(x = NULL, y = "tf-idf") + facet_wrap(~subreddit, ncol = 2, scales = "free_y") + coord_flip() + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-ggsave("tf_idf.pdf", device = "pdf", path = "pdpViz", height = 8, width = 6)
+ggsave("tf_idf.pdf", device = "pdf", path = "CCViz", height = 8, width = 6)
 ```
 
 
@@ -269,13 +269,13 @@ TknsByMonth <-TknsByDate %>%
     mutate(Month = make_date(year, month))
 
 monthCount <- TknsByMonth %>%
-    group_by(subreddit,year, month) %>% #group words by affiliation label
+    group_by(subreddit, month, year) %>% #group words by affiliation label
     count(word, sort = TRUE) %>% #count and create column 'n'
     top_n(10, n) %>%
     ungroup()
 
 monthCount <- monthCount %>%
-    group_by(subreddit,year, month) %>%
+    group_by(subreddit, month, year) %>%
     mutate(prop = n / max(n))
     
 table(monthCount$subreddit)
@@ -291,16 +291,53 @@ ggplot(monthCount, aes(
   scale_size_area(max_size = 20) +
   #scale_colour_gradient2(low = "black", mid = "red4", high = "red", space = "Lab", aesthetics = "color") +
   theme_minimal() +
-  facet_grid(vars(year), vars(month))
+  facet_grid(vars(month), vars(year))
 
 ggsave(
   "CC_timeline.pdf",
   device = "pdf",
   path = "CCViz",
-  height = 12,
+  height = 30,
   width = 20
 )
 ```
 
 
+## Currencies
+
+```{r}
+BTC <- c("Bitcoin", "bitcoin", "BTC", "btc")
+ETH <- c("Ethereum", "ethereum", "ETH", "eth")
+XRP <- c("Ripple", "ripple", "XRP", "xrp")
+LTC <- c("Litecoin", "litecoin", "LTC", "ltc")
+LINK <- c("Chainlink", "chainlink", "LINK", "link")
+
+currencies <- c(BTC, ETH, XRP, LTC, LINK)
+
+# For frequency analysis
+CurTkns <- TknsByDate %>%
+  filter(word %in% currencies)
+
+# For sentiment analysis
+CurComms <- CommData %>%
+  filter(comm_id %in% CurTkns$comm_id)
+```
+
+### Assigning Identifiers
+
+```{r}
+CurTkns
+```
+
+
+```{r}
+curTknsByMonth <-TknsByDate %>%
+    filter(year > 2015) %>%
+    mutate(Month = make_date(year, month))
+
+curCounts <- TknsByMonth %>%
+    group_by(subreddit, month, year) %>% #group words by affiliation label
+    count(word, sort = TRUE) %>% #count and create column 'n'
+    ungroup()
+```
 

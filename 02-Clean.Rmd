@@ -12,7 +12,7 @@ workingDir <- refsource
 # prefixes for all File reads and writes
 # titles for tables
 titletext <- "RedditCrypto"
-srs = c("CryptoCurrency")
+srs = c("CryptoCurrency","CryptoMarkets")
 
 `%notin%` <- Negate(`%in%`)
 
@@ -41,43 +41,43 @@ subm_fnames <- list.files(dataDir, pattern = "*_submissions.csv",
                         full.names = TRUE)
 comm_fnames <- list.files(dataDir, pattern = "*_comments.csv", 
                         full.names = TRUE)
+subr_fnames <- list.files(dataDir, pattern = "*_subreddit.csv", 
+                        full.names = TRUE)
+
 for (i in 1:length(subm_fnames)) 
   assign(srs[i], read.csv(subm_fnames[i]))
-SubmData <- CryptoCurrency
-#SubmData<- rbind()
-
+SubmData<- rbind(CryptoCurrency, CryptoMarkets)
 for (i in 1:length(comm_fnames)) 
   assign(srs[i], read.csv(comm_fnames[i]))
-CommData <- CryptoCurrency
-#CommData<- rbind()
+CommData<- rbind(CryptoCurrency, CryptoMarkets)
+for (i in 1:length(subr_fnames)) 
+  assign(srs[i], read.csv(subr_fnames[i]))
+SubrData<- rbind(CryptoCurrency, CryptoMarkets)
 ```
 
-### Separate
-
-The data are classified according to the subreddits (n = 8) that each submission belongs to. 
+### Fix Names
 ```{r social_clusters}
-# Compose comprehensive list of subreddit "communities "social clusters" under their affilliated spiritual beliefs
 Subreddits = srs
 ```
 
 
 ```{r}
-old_srNames <- unique(SubmData$subreddit)
+srs <- unique(SubmData$subreddit)
 
 SubmData <- SubmData %>%
     mutate(
       subreddit = case_when(
-        .$subreddit == srs[1] ~ "r/CryptoCurrency")
+        .$subreddit == srs[1] ~ "r/CryptoCurrency",
+        .$subreddit == srs[2] ~ "r/CryptoMarkets")
       ) %>%
   ungroup()
 ```
 
-## View data
+## Data Collection
 
 ```{r}
-s <- SubmData %>% filter(!subreddit == "r/all")
 
-submnums <- table(s$subreddit)
+submnums <- table(SubmData$subreddit)
 SubmNums <- as.data.frame(submnums, .name_repair = "minimal")
 colnames(SubmNums)[1] <- "Subreddit"
 ggplot(SubmNums, aes(x = Subreddit, y = Freq, fill = Subreddit)) + geom_bar(stat = "identity") + scale_y_continuous(name="# of Submissions by Subreddit", labels = scales::comma)
@@ -86,7 +86,7 @@ rm(s)
 
 
 ```{r}
-c <- CommData %>% filter(!subreddit == "r/all")
+c <- CommData
 
 commnums <- table(c$subreddit)
 CommNums <- as.data.frame(commnums, .name_repair = "minimal")
@@ -95,15 +95,15 @@ ggplot(CommNums, aes(x = Subreddit, y = Freq, fill = Subreddit)) + geom_bar(stat
 ```
 
 ```{r, include = FALSE}
-#r_data <- cbind(SRData, CommNums[c(1:4,6:8),])
+
 #r_data <- cbind(Subreddits[-c(8)], r_data)
 #rownames(r_data) <- Subreddits[-c(8)]
 #colnames(r_data)[c(3,4,7)] <- c("Title", "No. of Subscribers", "No. of #Comments")
 ```
 
-```{r, include = FALSE}
-#kable(r_data[c(3:4,7)],) %>%
-#  kable_styling("striped", full_width = F)
+```{r}
+kable(SubrData) %>%
+  kable_styling("striped", full_width = F)
 ```
 
 
@@ -271,15 +271,14 @@ G1Comm <- Comments %>%
 #Create object for numbers, so that we can remove them from the data
 nums <- G1Comm %>% filter(str_detect(word, "^[0-9]")) %>% select(word) %>% unique() #Source: https://richpauloo.github.io/2017-12-29-Using-tidytext-to-make-word-clouds/
 
-fknBots <- filter(G1Comm, word == "bot")
+Bots <- filter(G1Comm, word == "bot")
 
 data(stop_words)
 
 CommTkns <- G1Comm %>%
-    #group_by(pol_group) %>%
     anti_join(stop_words) %>% #take out stop words (i.e. 'a', 'an', 'of', 'the')
     anti_join(nums, by = "word") %>%
-    filter(user %notin% fknBots$user) %>%
+    filter(user %notin% Bots$user) %>%
     filter(!grepl("_", .$word))
     #ungroup()
 
@@ -317,7 +316,7 @@ paste("Removed", nrow(CommData) - nrow(Comments),"tokens")
 
 ```{r}
 G1CommCount <- G1Comm %>%
-    #group_by(subreddit) %>% #group words by affiliation label
+    group_by(subreddit) %>% #group words by affiliation label
     count(subreddit, word, sort = FALSE) %>% #count and create column 'n'
     ungroup()
 
