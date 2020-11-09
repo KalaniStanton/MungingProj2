@@ -4,6 +4,7 @@ author: "Timothy McCormack, Carolyn Herrera, Wei Chun Tien, "
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
+output_dir: "docs"
 documentclass: book
 bibliography: [book.bib, packages.bib]
 biblio-style: apalike

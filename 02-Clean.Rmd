@@ -1,24 +1,5 @@
 # Data Import and Clean
 
-```{r setup}
-knitr::opts_chunk$set(message = FALSE, warning = FALSE, echo = TRUE)
-# set to TRUE to run this on only one reference file
-debugging <- FALSE
-# this will expect the file or files to be in a subdirectory with the following name
-refsource <- "MungingProj2"
-dataDir <- "Proj2Data"
-workingDir <- refsource
-
-# prefixes for all File reads and writes
-# titles for tables
-titletext <- "RedditCrypto"
-srs = c("CryptoCurrency","CryptoMarkets")
-
-`%notin%` <- Negate(`%in%`)
-
-Sys.time()
-```
-
 ```{r, message = FALSE}
 library(tidyverse)
 library(tidytext)
@@ -34,15 +15,29 @@ library(ggraph)
 library(tm)
 ```
 
+```{r clean_setup}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, echo = TRUE)
+# set to TRUE to run this on only one reference file
+debugging <- FALSE
+# this will expect the file or files to be in a subdirectory with the following name
+refsource <- "MungingProj2"
+dataDir <- "Proj2Data"
+workingDir <- refsource
+
+# prefixes for all File reads and writes
+# titles for tables
+titletext <- "RedditCrypto"
+srs = c("CryptoCurrency","CryptoMarkets")
+
+`%notin%` <- Negate(`%in%`)
+```
+
 ## Import Data
 
 ```{r}
-subm_fnames <- list.files(dataDir, pattern = "*_submissions.csv", 
-                        full.names = TRUE)
-comm_fnames <- list.files(dataDir, pattern = "*_comments.csv", 
-                        full.names = TRUE)
-subr_fnames <- list.files(dataDir, pattern = "*_subreddit.csv", 
-                        full.names = TRUE)
+subm_fnames <- list.files(dataDir, pattern = "*_submissions.csv", full.names = TRUE)
+comm_fnames <- list.files(dataDir, pattern = "*_comments.csv", full.names = TRUE)
+subr_fnames <- list.files(dataDir, pattern = "*_subreddit.csv", full.names = TRUE)
 
 for (i in 1:length(subm_fnames)) 
   assign(srs[i], read.csv(subm_fnames[i]))
@@ -56,10 +51,6 @@ SubrData<- rbind(CryptoCurrency, CryptoMarkets)
 ```
 
 ### Fix Names
-```{r social_clusters}
-Subreddits = srs
-```
-
 
 ```{r}
 srs <- unique(SubmData$subreddit)
@@ -81,7 +72,7 @@ submnums <- table(SubmData$subreddit)
 SubmNums <- as.data.frame(submnums, .name_repair = "minimal")
 colnames(SubmNums)[1] <- "Subreddit"
 ggplot(SubmNums, aes(x = Subreddit, y = Freq, fill = Subreddit)) + geom_bar(stat = "identity") + scale_y_continuous(name="# of Submissions by Subreddit", labels = scales::comma)
-rm(s)
+
 ```
 
 
@@ -120,7 +111,7 @@ table(CommData$subreddit)
 ```
 
 
-### Clean
+## Clean
 
 To ensure that our data accurately represent activity within the communitas, we want to ensure that each observation is a unique instance of engagement. Reposts tend to be common on reddit, so using a `distinct()` function on the text column will remove any duplicate posts. Additionally, any posts that are removed from the subreddits return  an `NA` value in `user` column, thus we can remove deleted comments by filtering out all non `user == NA`.
 
@@ -137,7 +128,7 @@ Submissions <- SubmData %>%
 paste("Removed", nrow(SubmData) - nrow(Submissions),"submissions.")
 ```
 
-## Submissions
+### Submissions
 
 The analysis of langauge begins by quantifying the presence of words in each Subm, through the process of *tokenization*. *Tokens* are discrete strings of words or characters that can be isolated as n-grams; with *n* pertaining to the number of words in each token. Tokens are pulled from the body of text that is most informative for the purposes of analysis. For submissions, the informative text is the *title* of the submission, which contains information on topics; whereas, for comments, the informative text is the `comment` itself. 
 
@@ -156,11 +147,9 @@ SubmissionTkns <- Submissions %>%
 
 ```
 
-## Clean
 
 As part of the tokenization process for submissions, we remove stop words (e.g. "and", "a", "the") because we are interested in using our tokens to identify prevalent topics of discussion and attitudes in the religiously affiliated social clusters. In contrast, stop words are not removed from text data in comments because they are useful in the analysis of linguistic sentiment and behavior.
-
-##### 1-grams (Clean)
+#### 1-grams (Clean)
 
 ```{r}
 #Create object for numbers, so that we can remove them from the data
@@ -175,7 +164,7 @@ G1Subm <- SubmissionTkns
 
 ```
 
-##### 2-grams (Clean)
+#### 2-grams (Clean)
 
 2-gram code is not used in analysis due to unsolved cleaning error.
 
@@ -219,7 +208,7 @@ rm(G1Subm)
 #rm(G2Subm)
 ```
 
-# Comments 
+## Comments 
 
 The cleaning and tokenization process for comments is similar to that of submissions; however, a few extra steps must be taken considering the casual and conversational nature of reddit comments.
 
@@ -298,7 +287,7 @@ paste("Removed", nrow(CommData) - nrow(Comments),"tokens")
 #G2Comm_filtered <- G2Comm_separated %>% 
 #  filter(!word1 %in% stop_words$word) %>% #remove stop words
 #  filter(!word2 %in% stop_words$word) %>%
-#  filter(!word1 == "NA") %>% #remove anomylous strings
+#  filter(!word1 == "NA") %>% #remove anomalous strings
 #  filter(!word2 == "NA") %>%
 #  filter(!word1 %in% nums) %>% #remove numbers
 #  filter(!word2 %in% nums)
@@ -329,70 +318,7 @@ rm(G1Comm)
 #rm(G2Comm)
 ```
 
-# Create Matrices
-
-*Posts/Text Data*: Using our one-gram tokens as row names, we can manipulate the data frame into a matrix, which is more a more versatile structure for the sake of analyzing correlations.
-
-*Users*: A matrix of user engagement by subreddit would show the level of cross interaction between these subreddits.
-
-###Comments
-
-```{r CommentMatrix}
-CommMtrx <- spread(G1CommCount, subreddit, n) #create columns for data
-CommMtrx[is.na(CommMtrx)] <- 0  #replace NA values with 0
-CommMtrx
-```
-
-### Submissions
-
-```{r SubmMatrix}
-SubMtrx <- spread(G1SubmCount, subreddit, n) #create columns for data
-SubMtrx[is.na(SubMtrx)] <- 0  #replace NA values with 0
-SubMtrx
-```
-
-### Users
-
-```{r User_df}
-userC <- Comments %>%
-  select(subreddit, user)
-```
-
-```{r User_count}
-userCount <- userC %>%
-  group_by(subreddit) %>%
-  count(user) %>%
-  ungroup()
-```
-
-```{r user_matrix}
-UserMtrx <- spread(userCount, subreddit, n)  #create columns for counts by subreddit
-UserMtrx #user matrix data will be cleaned later because of variations in the approach to analyze cross interaction
-```
-
-
-# LIWC Cleaning
-
-
-## Submission bag-of-words
-
-As topic-oriented arenas for social engagement, the comment threads of submissions on these subreddits offer insights into the semantic tendencies of each subreddit. To collect this data, I aggregated all comments into a single document for each submission, then will run these scores through the LIWC software.
-
-```{r}
-#LIWCbyPost <- aggregate(text ~ subreddit*post, Comments,paste,collapse=" ")
-#dim(LIWCbyPost)
-```
-
-## Subreddit bag-of-words
-
-Similar to the submission LIWC document, the subreddit aggregates all comments from submissions, but are aggregated into a document for each subreddit. The data are then analyzed descriptively, focusing on the semantic content of comments as contributions to a collectively shaped identity. 
-
-```{r}
-#SAbySubreddit <- aggregate(text ~ subreddit, Comments,paste,collapse=" ")
-#dim(SAbySubreddit)
-```
-
-# Export
+## Export
 
 ```{r export_submissions}
 #write.csv(G1SubmCount, "clean_data/1GSubm.csv", row.names = FALSE)
@@ -404,14 +330,9 @@ write.csv(SubmissionTkns, paste0(dataDir, "/SubmTkns.csv"), row.names = FALSE)
 write.csv(CommTkns, paste0(dataDir, "/CommTkns.csv"), row.names = FALSE)
 ```
 
-```{r export_matrices}
-write.csv(SubMtrx, paste0(dataDir, "/SubMtrx.csv"), row.names = FALSE)
-write.csv(CommMtrx, paste0(dataDir, "/CommMtrx.csv"), row.names = FALSE)
-write.csv(UserMtrx, paste0(dataDir, "/UserMtrx.csv"), row.names = FALSE)
-```
 
 
-# Works Cited
+## Works Cited
 
 Boe B (2014). PRAW: The Python Reddit API Wrapper. 2012-, https://github.com/praw-dev/praw/ [Online; accessed 2017-09-29].
 
