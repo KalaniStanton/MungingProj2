@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 2 Data Import and Clean | An analysis of Cryptocurrency</title>
+  <meta name="description" content="Chapter 2 Data Import and Clean | An analysis of Cryptocurrency" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 2 Data Import and Clean | An analysis of Cryptocurrency" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  <meta name="github-repo" content="KalaniStanton/RedditCryptoEDA" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 2 Data Import and Clean | An analysis of Cryptocurrency" />
+  
+  
+  
+
+<meta name="author" content="Timothy McCormack, Carolyn Herrera, Wei Chun Tien," />
+
+
+<meta name="date" content="2020-11-09" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="intro.html"/>
+<link rel="next" href="token-analysis.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Reddit Crypto Analysis</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html"><i class="fa fa-check"></i><b>2</b> Data Import and Clean</a><ul>
+<li class="chapter" data-level="2.1" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#import-data"><i class="fa fa-check"></i><b>2.1</b> Import Data</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#fix-names"><i class="fa fa-check"></i><b>2.1.1</b> Fix Names</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#data-collection"><i class="fa fa-check"></i><b>2.2</b> Data Collection</a></li>
+<li class="chapter" data-level="2.3" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#clean"><i class="fa fa-check"></i><b>2.3</b> Clean</a><ul>
+<li class="chapter" data-level="2.3.1" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#submissions"><i class="fa fa-check"></i><b>2.3.1</b> Submissions</a></li>
+<li class="chapter" data-level="2.3.2" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#count"><i class="fa fa-check"></i><b>2.3.2</b> Count</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#comments"><i class="fa fa-check"></i><b>2.4</b> Comments</a><ul>
+<li class="chapter" data-level="2.4.1" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#clean-1"><i class="fa fa-check"></i><b>2.4.1</b> Clean</a></li>
+<li class="chapter" data-level="2.4.2" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#tokenize"><i class="fa fa-check"></i><b>2.4.2</b> Tokenize</a></li>
+<li class="chapter" data-level="2.4.3" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#count-1"><i class="fa fa-check"></i><b>2.4.3</b> Count</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#export"><i class="fa fa-check"></i><b>2.5</b> Export</a></li>
+<li class="chapter" data-level="2.6" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#works-cited"><i class="fa fa-check"></i><b>2.6</b> Works Cited</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="token-analysis.html"><a href="token-analysis.html"><i class="fa fa-check"></i><b>3</b> Token Analysis</a><ul>
+<li class="chapter" data-level="3.1" data-path="token-analysis.html"><a href="token-analysis.html#import"><i class="fa fa-check"></i><b>3.1</b> Import</a></li>
+<li class="chapter" data-level="3.2" data-path="token-analysis.html"><a href="token-analysis.html#token-counts"><i class="fa fa-check"></i><b>3.2</b> Token Counts</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="token-analysis.html"><a href="token-analysis.html#most-frequent-tokens"><i class="fa fa-check"></i><b>3.2.1</b> Most Frequent Tokens</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="token-analysis.html"><a href="token-analysis.html#wordclouds"><i class="fa fa-check"></i><b>3.3</b> Wordclouds</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="token-analysis.html"><a href="token-analysis.html#all-words-submissions-and-comments"><i class="fa fa-check"></i><b>3.3.1</b> All words (Submissions and Comments)</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="token-analysis.html"><a href="token-analysis.html#tf-idf"><i class="fa fa-check"></i><b>3.4</b> TF-IDF</a></li>
+<li class="chapter" data-level="3.5" data-path="token-analysis.html"><a href="token-analysis.html#posts-over-time"><i class="fa fa-check"></i><b>3.5</b> Posts over time</a></li>
+<li class="chapter" data-level="3.6" data-path="token-analysis.html"><a href="token-analysis.html#currencies"><i class="fa fa-check"></i><b>3.6</b> Currencies</a><ul>
+<li class="chapter" data-level="3.6.1" data-path="token-analysis.html"><a href="token-analysis.html#assigning-identifiers"><i class="fa fa-check"></i><b>3.6.1</b> Assigning Identifiers</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">An analysis of Cryptocurrency</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="data-import-and-clean" class="section level1">
+<h1><span class="header-section-number">Chapter 2</span> Data Import and Clean</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="data-import-and-clean.html#cb1-1"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="data-import-and-clean.html#cb1-2"></a><span class="kw">library</span>(tidytext)</span>
+<span id="cb1-3"><a href="data-import-and-clean.html#cb1-3"></a><span class="kw">library</span>(textclean)</span>
+<span id="cb1-4"><a href="data-import-and-clean.html#cb1-4"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb1-5"><a href="data-import-and-clean.html#cb1-5"></a><span class="kw">library</span>(stringr)</span>
+<span id="cb1-6"><a href="data-import-and-clean.html#cb1-6"></a><span class="kw">library</span>(knitr)</span>
+<span id="cb1-7"><a href="data-import-and-clean.html#cb1-7"></a><span class="kw">library</span>(wordcloud)</span>
+<span id="cb1-8"><a href="data-import-and-clean.html#cb1-8"></a><span class="kw">library</span>(kableExtra)</span>
+<span id="cb1-9"><a href="data-import-and-clean.html#cb1-9"></a><span class="kw">library</span>(DT)</span>
+<span id="cb1-10"><a href="data-import-and-clean.html#cb1-10"></a><span class="kw">library</span>(tidygraph)</span>
+<span id="cb1-11"><a href="data-import-and-clean.html#cb1-11"></a><span class="kw">library</span>(ggraph)</span>
+<span id="cb1-12"><a href="data-import-and-clean.html#cb1-12"></a><span class="kw">library</span>(tm)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="data-import-and-clean.html#cb2-1"></a>knitr<span class="op">::</span>opts_chunk<span class="op">$</span><span class="kw">set</span>(<span class="dt">message =</span> <span class="ot">FALSE</span>, <span class="dt">warning =</span> <span class="ot">FALSE</span>, <span class="dt">echo =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb2-2"><a href="data-import-and-clean.html#cb2-2"></a><span class="co"># set to TRUE to run this on only one reference file</span></span>
+<span id="cb2-3"><a href="data-import-and-clean.html#cb2-3"></a>debugging &lt;-<span class="st"> </span><span class="ot">FALSE</span></span>
+<span id="cb2-4"><a href="data-import-and-clean.html#cb2-4"></a><span class="co"># this will expect the file or files to be in a subdirectory with the following name</span></span>
+<span id="cb2-5"><a href="data-import-and-clean.html#cb2-5"></a>refsource &lt;-<span class="st"> &quot;MungingProj2&quot;</span></span>
+<span id="cb2-6"><a href="data-import-and-clean.html#cb2-6"></a>dataDir &lt;-<span class="st"> &quot;Proj2Data&quot;</span></span>
+<span id="cb2-7"><a href="data-import-and-clean.html#cb2-7"></a>workingDir &lt;-<span class="st"> </span>refsource</span>
+<span id="cb2-8"><a href="data-import-and-clean.html#cb2-8"></a></span>
+<span id="cb2-9"><a href="data-import-and-clean.html#cb2-9"></a><span class="co"># prefixes for all File reads and writes</span></span>
+<span id="cb2-10"><a href="data-import-and-clean.html#cb2-10"></a><span class="co"># titles for tables</span></span>
+<span id="cb2-11"><a href="data-import-and-clean.html#cb2-11"></a>titletext &lt;-<span class="st"> &quot;RedditCrypto&quot;</span></span>
+<span id="cb2-12"><a href="data-import-and-clean.html#cb2-12"></a>srs =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;CryptoCurrency&quot;</span>,<span class="st">&quot;CryptoMarkets&quot;</span>)</span>
+<span id="cb2-13"><a href="data-import-and-clean.html#cb2-13"></a></span>
+<span id="cb2-14"><a href="data-import-and-clean.html#cb2-14"></a><span class="st">`</span><span class="dt">%notin%</span><span class="st">`</span> &lt;-<span class="st"> </span><span class="kw">Negate</span>(<span class="st">`</span><span class="dt">%in%</span><span class="st">`</span>)</span></code></pre></div>
+<div id="import-data" class="section level2">
+<h2><span class="header-section-number">2.1</span> Import Data</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="data-import-and-clean.html#cb3-1"></a>subm_fnames &lt;-<span class="st"> </span><span class="kw">list.files</span>(dataDir, <span class="dt">pattern =</span> <span class="st">&quot;*_submissions.csv&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb3-2"><a href="data-import-and-clean.html#cb3-2"></a>comm_fnames &lt;-<span class="st"> </span><span class="kw">list.files</span>(dataDir, <span class="dt">pattern =</span> <span class="st">&quot;*_comments.csv&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb3-3"><a href="data-import-and-clean.html#cb3-3"></a>subr_fnames &lt;-<span class="st"> </span><span class="kw">list.files</span>(dataDir, <span class="dt">pattern =</span> <span class="st">&quot;*_subreddit.csv&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb3-4"><a href="data-import-and-clean.html#cb3-4"></a></span>
+<span id="cb3-5"><a href="data-import-and-clean.html#cb3-5"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(subm_fnames)) </span>
+<span id="cb3-6"><a href="data-import-and-clean.html#cb3-6"></a>  <span class="kw">assign</span>(srs[i], <span class="kw">read.csv</span>(subm_fnames[i]))</span>
+<span id="cb3-7"><a href="data-import-and-clean.html#cb3-7"></a>SubmData&lt;-<span class="st"> </span><span class="kw">rbind</span>(CryptoCurrency, CryptoMarkets)</span>
+<span id="cb3-8"><a href="data-import-and-clean.html#cb3-8"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(comm_fnames)) </span>
+<span id="cb3-9"><a href="data-import-and-clean.html#cb3-9"></a>  <span class="kw">assign</span>(srs[i], <span class="kw">read.csv</span>(comm_fnames[i]))</span>
+<span id="cb3-10"><a href="data-import-and-clean.html#cb3-10"></a>CommData&lt;-<span class="st"> </span><span class="kw">rbind</span>(CryptoCurrency, CryptoMarkets)</span>
+<span id="cb3-11"><a href="data-import-and-clean.html#cb3-11"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(subr_fnames)) </span>
+<span id="cb3-12"><a href="data-import-and-clean.html#cb3-12"></a>  <span class="kw">assign</span>(srs[i], <span class="kw">read.csv</span>(subr_fnames[i]))</span>
+<span id="cb3-13"><a href="data-import-and-clean.html#cb3-13"></a>SubrData&lt;-<span class="st"> </span><span class="kw">rbind</span>(CryptoCurrency, CryptoMarkets)</span></code></pre></div>
+<div id="fix-names" class="section level3">
+<h3><span class="header-section-number">2.1.1</span> Fix Names</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="data-import-and-clean.html#cb4-1"></a>srs &lt;-<span class="st"> </span><span class="kw">unique</span>(SubmData<span class="op">$</span>subreddit)</span>
+<span id="cb4-2"><a href="data-import-and-clean.html#cb4-2"></a></span>
+<span id="cb4-3"><a href="data-import-and-clean.html#cb4-3"></a>SubmData &lt;-<span class="st"> </span>SubmData <span class="op">%&gt;%</span></span>
+<span id="cb4-4"><a href="data-import-and-clean.html#cb4-4"></a><span class="st">    </span><span class="kw">mutate</span>(</span>
+<span id="cb4-5"><a href="data-import-and-clean.html#cb4-5"></a>      <span class="dt">subreddit =</span> <span class="kw">case_when</span>(</span>
+<span id="cb4-6"><a href="data-import-and-clean.html#cb4-6"></a>        .<span class="op">$</span>subreddit <span class="op">==</span><span class="st"> </span>srs[<span class="dv">1</span>] <span class="op">~</span><span class="st"> &quot;r/CryptoCurrency&quot;</span>,</span>
+<span id="cb4-7"><a href="data-import-and-clean.html#cb4-7"></a>        .<span class="op">$</span>subreddit <span class="op">==</span><span class="st"> </span>srs[<span class="dv">2</span>] <span class="op">~</span><span class="st"> &quot;r/CryptoMarkets&quot;</span>)</span>
+<span id="cb4-8"><a href="data-import-and-clean.html#cb4-8"></a>      ) <span class="op">%&gt;%</span></span>
+<span id="cb4-9"><a href="data-import-and-clean.html#cb4-9"></a><span class="st">  </span><span class="kw">ungroup</span>()</span></code></pre></div>
+</div>
+</div>
+<div id="data-collection" class="section level2">
+<h2><span class="header-section-number">2.2</span> Data Collection</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="data-import-and-clean.html#cb5-1"></a>submnums &lt;-<span class="st"> </span><span class="kw">table</span>(SubmData<span class="op">$</span>subreddit)</span>
+<span id="cb5-2"><a href="data-import-and-clean.html#cb5-2"></a>SubmNums &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(submnums, <span class="dt">.name_repair =</span> <span class="st">&quot;minimal&quot;</span>)</span>
+<span id="cb5-3"><a href="data-import-and-clean.html#cb5-3"></a><span class="kw">colnames</span>(SubmNums)[<span class="dv">1</span>] &lt;-<span class="st"> &quot;Subreddit&quot;</span></span>
+<span id="cb5-4"><a href="data-import-and-clean.html#cb5-4"></a><span class="kw">ggplot</span>(SubmNums, <span class="kw">aes</span>(<span class="dt">x =</span> Subreddit, <span class="dt">y =</span> Freq, <span class="dt">fill =</span> Subreddit)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">scale_y_continuous</span>(<span class="dt">name=</span><span class="st">&quot;# of Submissions by Subreddit&quot;</span>, <span class="dt">labels =</span> scales<span class="op">::</span>comma)</span></code></pre></div>
+<p><img src="bookdown-demo_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="data-import-and-clean.html#cb6-1"></a>c &lt;-<span class="st"> </span>CommData</span>
+<span id="cb6-2"><a href="data-import-and-clean.html#cb6-2"></a></span>
+<span id="cb6-3"><a href="data-import-and-clean.html#cb6-3"></a>commnums &lt;-<span class="st"> </span><span class="kw">table</span>(c<span class="op">$</span>subreddit)</span>
+<span id="cb6-4"><a href="data-import-and-clean.html#cb6-4"></a>CommNums &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(commnums, <span class="dt">.name_repair =</span> <span class="st">&quot;minimal&quot;</span>)</span>
+<span id="cb6-5"><a href="data-import-and-clean.html#cb6-5"></a><span class="kw">colnames</span>(CommNums)[<span class="dv">1</span>] &lt;-<span class="st"> &quot;Subreddit&quot;</span></span>
+<span id="cb6-6"><a href="data-import-and-clean.html#cb6-6"></a><span class="kw">ggplot</span>(CommNums, <span class="kw">aes</span>(<span class="dt">x =</span> Subreddit, <span class="dt">y =</span> Freq, <span class="dt">fill =</span> Subreddit)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">scale_y_continuous</span>(<span class="dt">name=</span><span class="st">&quot;# of Comments by Subreddit (from 300 posts each)&quot;</span>, <span class="dt">labels =</span> scales<span class="op">::</span>comma)</span></code></pre></div>
+<p><img src="bookdown-demo_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="data-import-and-clean.html#cb7-1"></a><span class="kw">kable</span>(SubrData) <span class="op">%&gt;%</span></span>
+<span id="cb7-2"><a href="data-import-and-clean.html#cb7-2"></a><span class="st">  </span><span class="kw">kable_styling</span>(<span class="st">&quot;striped&quot;</span>, <span class="dt">full_width =</span> F)</span></code></pre></div>
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+X
+</th>
+<th style="text-align:left;">
+title
+</th>
+<th style="text-align:right;">
+subscribers
+</th>
+<th style="text-align:left;">
+created
+</th>
+<th style="text-align:left;">
+public_description
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+Cryptocurrency News &amp; Discussion
+</td>
+<td style="text-align:right;">
+1117855
+</td>
+<td style="text-align:left;">
+2013-03-11 17:51:50
+</td>
+<td style="text-align:left;">
+The official source for CryptoCurrency News, Discussion &amp; Analysis.
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+r/CryptoMarkets
+</td>
+<td style="text-align:right;">
+236835
+</td>
+<td style="text-align:left;">
+2013-11-12 18:50:17
+</td>
+<td style="text-align:left;">
+<p>FOREX community for cryptocurrencies.</p>
+Tags: mt gox bitcoin, long term potential, open source exchange, low inflation rate, demand and price, technical analysis, fundamentals, Bitcoin, Ethereum, Litecoin, Monero, Dash, Augur, token, volume, oscillator, RSI, stochastic, trend, sentiment, strategy, scam, coin, coinmarketcap, altcoin, Peercoin, script, blockchain, PoW, PoS, Proof of Work,
+</td>
+</tr>
+</tbody>
+</table>
+<p><em>Submissions</em> from each subreddit:</p>
+<p><em>Comments</em> in each subreddit:</p>
+</div>
+<div id="clean" class="section level2">
+<h2><span class="header-section-number">2.3</span> Clean</h2>
+<p>To ensure that our data accurately represent activity within the communitas, we want to ensure that each observation is a unique instance of engagement. Reposts tend to be common on reddit, so using a <code>distinct()</code> function on the text column will remove any duplicate posts. Additionally, any posts that are removed from the subreddits return an <code>NA</code> value in <code>user</code> column, thus we can remove deleted comments by filtering out all non <code>user == NA</code>.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="data-import-and-clean.html#cb8-1"></a><span class="co">#Clean</span></span>
+<span id="cb8-2"><a href="data-import-and-clean.html#cb8-2"></a><span class="kw">Encoding</span>(SubmData<span class="op">$</span>text) &lt;-<span class="st"> &quot;UTF-8&quot;</span></span>
+<span id="cb8-3"><a href="data-import-and-clean.html#cb8-3"></a></span>
+<span id="cb8-4"><a href="data-import-and-clean.html#cb8-4"></a>Submissions &lt;-<span class="st"> </span>SubmData <span class="op">%&gt;%</span></span>
+<span id="cb8-5"><a href="data-import-and-clean.html#cb8-5"></a><span class="st">  </span><span class="kw">group_by</span>(user) <span class="op">%&gt;%</span></span>
+<span id="cb8-6"><a href="data-import-and-clean.html#cb8-6"></a><span class="st">    </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(user)) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># Take out deleted comments</span></span>
+<span id="cb8-7"><a href="data-import-and-clean.html#cb8-7"></a><span class="st">    </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
+<span id="cb8-8"><a href="data-import-and-clean.html#cb8-8"></a><span class="st">    </span><span class="kw">distinct</span>(text, <span class="dt">.keep_all =</span> <span class="ot">TRUE</span>) <span class="co">#remove duplicate submissions</span></span>
+<span id="cb8-9"><a href="data-import-and-clean.html#cb8-9"></a></span>
+<span id="cb8-10"><a href="data-import-and-clean.html#cb8-10"></a><span class="kw">paste</span>(<span class="st">&quot;Removed&quot;</span>, <span class="kw">nrow</span>(SubmData) <span class="op">-</span><span class="st"> </span><span class="kw">nrow</span>(Submissions),<span class="st">&quot;submissions.&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;Removed 14 submissions.&quot;</code></pre>
+<div id="submissions" class="section level3">
+<h3><span class="header-section-number">2.3.1</span> Submissions</h3>
+<p>The analysis of langauge begins by quantifying the presence of words in each Subm, through the process of <em>tokenization</em>. <em>Tokens</em> are discrete strings of words or characters that can be isolated as n-grams; with <em>n</em> pertaining to the number of words in each token. Tokens are pulled from the body of text that is most informative for the purposes of analysis. For submissions, the informative text is the <em>title</em> of the submission, which contains information on topics; whereas, for comments, the informative text is the <code>comment</code> itself.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="data-import-and-clean.html#cb10-1"></a><span class="kw">data</span>(stop_words)</span>
+<span id="cb10-2"><a href="data-import-and-clean.html#cb10-2"></a></span>
+<span id="cb10-3"><a href="data-import-and-clean.html#cb10-3"></a>SubmissionTkns &lt;-<span class="st"> </span>Submissions <span class="op">%&gt;%</span></span>
+<span id="cb10-4"><a href="data-import-and-clean.html#cb10-4"></a><span class="st">  </span><span class="kw">group_by</span>(subreddit) <span class="op">%&gt;%</span></span>
+<span id="cb10-5"><a href="data-import-and-clean.html#cb10-5"></a><span class="st">    </span><span class="kw">unnest_tokens</span>(word, text) <span class="op">%&gt;%</span></span>
+<span id="cb10-6"><a href="data-import-and-clean.html#cb10-6"></a><span class="st">    </span><span class="kw">ungroup</span>()</span>
+<span id="cb10-7"><a href="data-import-and-clean.html#cb10-7"></a></span>
+<span id="cb10-8"><a href="data-import-and-clean.html#cb10-8"></a><span class="co">#G2Subm &lt;- Submissions %&gt;%</span></span>
+<span id="cb10-9"><a href="data-import-and-clean.html#cb10-9"></a><span class="co">#    group_by(subreddit) %&gt;%</span></span>
+<span id="cb10-10"><a href="data-import-and-clean.html#cb10-10"></a><span class="co">#    unnest_tokens(bigram, text, token = &quot;ngrams&quot;, n = 2, n_min = #2) %&gt;% #repeat above as bigram</span></span>
+<span id="cb10-11"><a href="data-import-and-clean.html#cb10-11"></a><span class="co">#    ungroup()</span></span></code></pre></div>
+<p>As part of the tokenization process for submissions, we remove stop words (e.g. “and”, “a”, “the”) because we are interested in using our tokens to identify prevalent topics of discussion and attitudes in the religiously affiliated social clusters. In contrast, stop words are not removed from text data in comments because they are useful in the analysis of linguistic sentiment and behavior.
+#### 1-grams (Clean)</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="data-import-and-clean.html#cb11-1"></a><span class="co">#Create object for numbers, so that we can remove them from the data</span></span>
+<span id="cb11-2"><a href="data-import-and-clean.html#cb11-2"></a>nums &lt;-<span class="st"> </span>SubmissionTkns <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(<span class="kw">str_detect</span>(word, <span class="st">&quot;^[0-9]&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(word) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">unique</span>() <span class="co">#Source: https://richpauloo.github.io/2017-12-29-Using-tidytext-to-make-word-clouds/</span></span>
+<span id="cb11-3"><a href="data-import-and-clean.html#cb11-3"></a></span>
+<span id="cb11-4"><a href="data-import-and-clean.html#cb11-4"></a>SubmissionTkns &lt;-<span class="st"> </span>SubmissionTkns <span class="op">%&gt;%</span></span>
+<span id="cb11-5"><a href="data-import-and-clean.html#cb11-5"></a><span class="st">    </span><span class="kw">anti_join</span>(stop_words, <span class="dt">by =</span> <span class="st">&quot;word&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb11-6"><a href="data-import-and-clean.html#cb11-6"></a><span class="st">    </span><span class="kw">anti_join</span>(nums, <span class="dt">by =</span> <span class="st">&quot;word&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb11-7"><a href="data-import-and-clean.html#cb11-7"></a><span class="st">    </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">grepl</span>(<span class="st">&quot;_&quot;</span>, .<span class="op">$</span>word))</span>
+<span id="cb11-8"><a href="data-import-and-clean.html#cb11-8"></a></span>
+<span id="cb11-9"><a href="data-import-and-clean.html#cb11-9"></a>G1Subm &lt;-<span class="st"> </span>SubmissionTkns</span></code></pre></div>
+<div id="grams-clean" class="section level4">
+<h4><span class="header-section-number">2.3.1.1</span> 2-grams (Clean)</h4>
+<p>2-gram code is not used in analysis due to unsolved cleaning error.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="data-import-and-clean.html#cb12-1"></a><span class="co">#G2Subm_separated &lt;- G2Subm %&gt;% #Separate bigrams to remove stopwords and transitional phrases</span></span>
+<span id="cb12-2"><a href="data-import-and-clean.html#cb12-2"></a><span class="co">#  separate(bigram, c(&quot;word1&quot;, &quot;word2&quot;), sep = &quot; &quot;) #run boolean functions for cleaning on `word1` and `word2`</span></span>
+<span id="cb12-3"><a href="data-import-and-clean.html#cb12-3"></a></span>
+<span id="cb12-4"><a href="data-import-and-clean.html#cb12-4"></a><span class="co">#G2Subm_filtered &lt;- G2Subm_separated %&gt;% </span></span>
+<span id="cb12-5"><a href="data-import-and-clean.html#cb12-5"></a><span class="co">#  filter(!word1 %in% stop_words$word) %&gt;% #remove stop words</span></span>
+<span id="cb12-6"><a href="data-import-and-clean.html#cb12-6"></a><span class="co">#  filter(!word2 %in% stop_words$word) %&gt;%</span></span>
+<span id="cb12-7"><a href="data-import-and-clean.html#cb12-7"></a><span class="co">#  filter(!word1 == &quot;NA&quot;) %&gt;% #remove anomylous strings</span></span>
+<span id="cb12-8"><a href="data-import-and-clean.html#cb12-8"></a><span class="co">#  filter(!word2 == &quot;NA&quot;) %&gt;%</span></span>
+<span id="cb12-9"><a href="data-import-and-clean.html#cb12-9"></a><span class="co">#  filter(!word1 %in% nums) %&gt;% #remove numbers</span></span>
+<span id="cb12-10"><a href="data-import-and-clean.html#cb12-10"></a><span class="co">#  filter(!word2 %in% nums)</span></span>
+<span id="cb12-11"><a href="data-import-and-clean.html#cb12-11"></a></span>
+<span id="cb12-12"><a href="data-import-and-clean.html#cb12-12"></a><span class="co">#G2Subm &lt;- G2Subm_filtered %&gt;% </span></span>
+<span id="cb12-13"><a href="data-import-and-clean.html#cb12-13"></a><span class="co">#  unite(bigram, word1, word2, sep = &quot; &quot;)#reunify cleaned word columns</span></span>
+<span id="cb12-14"><a href="data-import-and-clean.html#cb12-14"></a></span>
+<span id="cb12-15"><a href="data-import-and-clean.html#cb12-15"></a><span class="co">#G2Subm &lt;- G2Subm[!grepl(&quot;_&quot;, G2Subm$bigram),]</span></span>
+<span id="cb12-16"><a href="data-import-and-clean.html#cb12-16"></a></span>
+<span id="cb12-17"><a href="data-import-and-clean.html#cb12-17"></a><span class="co">#rm(G2Subm_separated)</span></span>
+<span id="cb12-18"><a href="data-import-and-clean.html#cb12-18"></a><span class="co">#rm(G2Subm_filtered)</span></span></code></pre></div>
+</div>
+</div>
+<div id="count" class="section level3">
+<h3><span class="header-section-number">2.3.2</span> Count</h3>
+<p>Following tokenization, the presence of each n-gram is tallied within each communitas. The tallies are then sorted to show what the most frequently occuring words are in each category.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="data-import-and-clean.html#cb13-1"></a>G1SubmCount &lt;-<span class="st"> </span>G1Subm <span class="op">%&gt;%</span></span>
+<span id="cb13-2"><a href="data-import-and-clean.html#cb13-2"></a><span class="st">    </span><span class="kw">group_by</span>(subreddit) <span class="op">%&gt;%</span><span class="st"> </span><span class="co">#group words by affiliation label</span></span>
+<span id="cb13-3"><a href="data-import-and-clean.html#cb13-3"></a><span class="st">    </span><span class="kw">count</span>(word, <span class="dt">sort =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co">#count and create column &#39;n&#39;</span></span>
+<span id="cb13-4"><a href="data-import-and-clean.html#cb13-4"></a><span class="st">    </span><span class="kw">ungroup</span>()</span>
+<span id="cb13-5"><a href="data-import-and-clean.html#cb13-5"></a></span>
+<span id="cb13-6"><a href="data-import-and-clean.html#cb13-6"></a><span class="co">#G2SubmCount &lt;- G2Subm %&gt;% #repeat for bigrams</span></span>
+<span id="cb13-7"><a href="data-import-and-clean.html#cb13-7"></a><span class="co">#    group_by(subreddit) %&gt;%</span></span>
+<span id="cb13-8"><a href="data-import-and-clean.html#cb13-8"></a><span class="co">#    count(bigram, sort = FALSE) %&gt;%</span></span>
+<span id="cb13-9"><a href="data-import-and-clean.html#cb13-9"></a><span class="co">#    ungroup() </span></span>
+<span id="cb13-10"><a href="data-import-and-clean.html#cb13-10"></a></span>
+<span id="cb13-11"><a href="data-import-and-clean.html#cb13-11"></a><span class="kw">rm</span>(G1Subm)</span>
+<span id="cb13-12"><a href="data-import-and-clean.html#cb13-12"></a><span class="co">#rm(G2Subm)</span></span></code></pre></div>
+</div>
+</div>
+<div id="comments" class="section level2">
+<h2><span class="header-section-number">2.4</span> Comments</h2>
+<p>The cleaning and tokenization process for comments is similar to that of submissions; however, a few extra steps must be taken considering the casual and conversational nature of reddit comments.</p>
+<p><strong>NEED TO DO:</strong> Additionally, the number of comments on each submission varies, so it will be important to standardize word counts across subreddits..</p>
+<div id="clean-1" class="section level3">
+<h3><span class="header-section-number">2.4.1</span> Clean</h3>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="data-import-and-clean.html#cb14-1"></a><span class="kw">Encoding</span>(CommData<span class="op">$</span>text) &lt;-<span class="st"> &quot;UTF-8&quot;</span></span>
+<span id="cb14-2"><a href="data-import-and-clean.html#cb14-2"></a></span>
+<span id="cb14-3"><a href="data-import-and-clean.html#cb14-3"></a>Comments &lt;-<span class="st"> </span>CommData <span class="op">%&gt;%</span></span>
+<span id="cb14-4"><a href="data-import-and-clean.html#cb14-4"></a><span class="st">  </span><span class="kw">group_by</span>(user) <span class="op">%&gt;%</span></span>
+<span id="cb14-5"><a href="data-import-and-clean.html#cb14-5"></a><span class="st">    </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(user)) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># Take out deleted comments</span></span>
+<span id="cb14-6"><a href="data-import-and-clean.html#cb14-6"></a><span class="st">    </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
+<span id="cb14-7"><a href="data-import-and-clean.html#cb14-7"></a><span class="st">    </span><span class="kw">distinct</span>(text, <span class="dt">.keep_all =</span> <span class="ot">TRUE</span>) <span class="co">#remove duplicate comments</span></span>
+<span id="cb14-8"><a href="data-import-and-clean.html#cb14-8"></a></span>
+<span id="cb14-9"><a href="data-import-and-clean.html#cb14-9"></a><span class="kw">paste</span>(<span class="st">&quot;Removed&quot;</span>, <span class="kw">nrow</span>(CommData) <span class="op">-</span><span class="st"> </span><span class="kw">nrow</span>(Comments),<span class="st">&quot;comments&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;Removed 12771 comments&quot;</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="data-import-and-clean.html#cb16-1"></a>url_regex &lt;-<span class="st"> &quot;http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&amp;+]|[!*</span><span class="ch">\\</span><span class="st">(</span><span class="ch">\\</span><span class="st">),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+&quot;</span></span>
+<span id="cb16-2"><a href="data-import-and-clean.html#cb16-2"></a></span>
+<span id="cb16-3"><a href="data-import-and-clean.html#cb16-3"></a>Comments<span class="op">$</span>text &lt;-stringi<span class="op">::</span><span class="kw">stri_trans_general</span>(Comments<span class="op">$</span>text, <span class="st">&quot;latin-ascii&quot;</span>) <span class="co">#converts text encoding, otherwise the tokenizer won&#39;t retain contractions</span></span>
+<span id="cb16-4"><a href="data-import-and-clean.html#cb16-4"></a></span>
+<span id="cb16-5"><a href="data-import-and-clean.html#cb16-5"></a>Comments<span class="op">$</span>text &lt;-<span class="st"> </span><span class="kw">str_remove_all</span>(Comments<span class="op">$</span>text, url_regex)</span></code></pre></div>
+</div>
+<div id="tokenize" class="section level3">
+<h3><span class="header-section-number">2.4.2</span> Tokenize</h3>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="data-import-and-clean.html#cb17-1"></a><span class="co">#tokenize</span></span>
+<span id="cb17-2"><a href="data-import-and-clean.html#cb17-2"></a>G1Comm &lt;-<span class="st"> </span>Comments <span class="op">%&gt;%</span></span>
+<span id="cb17-3"><a href="data-import-and-clean.html#cb17-3"></a><span class="st">  </span><span class="kw">unnest_tokens</span>(word, text) <span class="co"># %&gt;%</span></span>
+<span id="cb17-4"><a href="data-import-and-clean.html#cb17-4"></a>    <span class="co">#ungroup()</span></span>
+<span id="cb17-5"><a href="data-import-and-clean.html#cb17-5"></a></span>
+<span id="cb17-6"><a href="data-import-and-clean.html#cb17-6"></a><span class="co">#G2Comm &lt;- Comments %&gt;%</span></span>
+<span id="cb17-7"><a href="data-import-and-clean.html#cb17-7"></a><span class="co">#    #group_by(subreddit) %&gt;%</span></span>
+<span id="cb17-8"><a href="data-import-and-clean.html#cb17-8"></a><span class="co">#    unnest_tokens(bigram, text, token = #&quot;ngrams&quot;, n = 2, n_min = 2) #%&gt;% #repeat above as bigram</span></span>
+<span id="cb17-9"><a href="data-import-and-clean.html#cb17-9"></a>    <span class="co">#ungroup()</span></span></code></pre></div>
+<div id="grams" class="section level4">
+<h4><span class="header-section-number">2.4.2.1</span> 1-grams</h4>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="data-import-and-clean.html#cb18-1"></a><span class="co">#Create object for numbers, so that we can remove them from the data</span></span>
+<span id="cb18-2"><a href="data-import-and-clean.html#cb18-2"></a>nums &lt;-<span class="st"> </span>G1Comm <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(<span class="kw">str_detect</span>(word, <span class="st">&quot;^[0-9]&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(word) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">unique</span>() <span class="co">#Source: https://richpauloo.github.io/2017-12-29-Using-tidytext-to-make-word-clouds/</span></span>
+<span id="cb18-3"><a href="data-import-and-clean.html#cb18-3"></a></span>
+<span id="cb18-4"><a href="data-import-and-clean.html#cb18-4"></a>Bots &lt;-<span class="st"> </span><span class="kw">filter</span>(G1Comm, word <span class="op">==</span><span class="st"> &quot;bot&quot;</span>)</span>
+<span id="cb18-5"><a href="data-import-and-clean.html#cb18-5"></a></span>
+<span id="cb18-6"><a href="data-import-and-clean.html#cb18-6"></a><span class="kw">data</span>(stop_words)</span>
+<span id="cb18-7"><a href="data-import-and-clean.html#cb18-7"></a></span>
+<span id="cb18-8"><a href="data-import-and-clean.html#cb18-8"></a>CommTkns &lt;-<span class="st"> </span>G1Comm <span class="op">%&gt;%</span></span>
+<span id="cb18-9"><a href="data-import-and-clean.html#cb18-9"></a><span class="st">    </span><span class="kw">anti_join</span>(stop_words) <span class="op">%&gt;%</span><span class="st"> </span><span class="co">#take out stop words (i.e. &#39;a&#39;, &#39;an&#39;, &#39;of&#39;, &#39;the&#39;)</span></span>
+<span id="cb18-10"><a href="data-import-and-clean.html#cb18-10"></a><span class="st">    </span><span class="kw">anti_join</span>(nums, <span class="dt">by =</span> <span class="st">&quot;word&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb18-11"><a href="data-import-and-clean.html#cb18-11"></a><span class="st">    </span><span class="kw">filter</span>(user <span class="op">%notin%</span><span class="st"> </span>Bots<span class="op">$</span>user) <span class="op">%&gt;%</span></span>
+<span id="cb18-12"><a href="data-import-and-clean.html#cb18-12"></a><span class="st">    </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">grepl</span>(<span class="st">&quot;_&quot;</span>, .<span class="op">$</span>word))</span>
+<span id="cb18-13"><a href="data-import-and-clean.html#cb18-13"></a>    <span class="co">#ungroup()</span></span>
+<span id="cb18-14"><a href="data-import-and-clean.html#cb18-14"></a></span>
+<span id="cb18-15"><a href="data-import-and-clean.html#cb18-15"></a>G1Comm &lt;-<span class="st"> </span>CommTkns</span>
+<span id="cb18-16"><a href="data-import-and-clean.html#cb18-16"></a></span>
+<span id="cb18-17"><a href="data-import-and-clean.html#cb18-17"></a><span class="kw">paste</span>(<span class="st">&quot;Removed&quot;</span>, <span class="kw">nrow</span>(CommData) <span class="op">-</span><span class="st"> </span><span class="kw">nrow</span>(Comments),<span class="st">&quot;tokens&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;Removed 12771 tokens&quot;</code></pre>
+</div>
+<div id="grams-clean-1" class="section level4">
+<h4><span class="header-section-number">2.4.2.2</span> 2-grams (Clean)</h4>
+<p>2-gram code is not used in analysis due to unsolved cleaning error.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="data-import-and-clean.html#cb20-1"></a><span class="co">#G2Comm_separated &lt;- G2Comm %&gt;% #Separate bigrams to remove stopwords and transitional phrases</span></span>
+<span id="cb20-2"><a href="data-import-and-clean.html#cb20-2"></a><span class="co">#  separate(bigram, c(&quot;word1&quot;, &quot;word2&quot;), sep = &quot; &quot;) #run boolean functions for cleaning on `word1` and `word2`</span></span>
+<span id="cb20-3"><a href="data-import-and-clean.html#cb20-3"></a></span>
+<span id="cb20-4"><a href="data-import-and-clean.html#cb20-4"></a><span class="co">#G2Comm_filtered &lt;- G2Comm_separated %&gt;% </span></span>
+<span id="cb20-5"><a href="data-import-and-clean.html#cb20-5"></a><span class="co">#  filter(!word1 %in% stop_words$word) %&gt;% #remove stop words</span></span>
+<span id="cb20-6"><a href="data-import-and-clean.html#cb20-6"></a><span class="co">#  filter(!word2 %in% stop_words$word) %&gt;%</span></span>
+<span id="cb20-7"><a href="data-import-and-clean.html#cb20-7"></a><span class="co">#  filter(!word1 == &quot;NA&quot;) %&gt;% #remove anomalous strings</span></span>
+<span id="cb20-8"><a href="data-import-and-clean.html#cb20-8"></a><span class="co">#  filter(!word2 == &quot;NA&quot;) %&gt;%</span></span>
+<span id="cb20-9"><a href="data-import-and-clean.html#cb20-9"></a><span class="co">#  filter(!word1 %in% nums) %&gt;% #remove numbers</span></span>
+<span id="cb20-10"><a href="data-import-and-clean.html#cb20-10"></a><span class="co">#  filter(!word2 %in% nums)</span></span>
+<span id="cb20-11"><a href="data-import-and-clean.html#cb20-11"></a></span>
+<span id="cb20-12"><a href="data-import-and-clean.html#cb20-12"></a><span class="co">#G2Comm &lt;- G2Comm_filtered %&gt;% </span></span>
+<span id="cb20-13"><a href="data-import-and-clean.html#cb20-13"></a><span class="co">#  unite(bigram, word1, word2, sep = &quot; &quot;)#reunify cleaned word columns</span></span>
+<span id="cb20-14"><a href="data-import-and-clean.html#cb20-14"></a></span>
+<span id="cb20-15"><a href="data-import-and-clean.html#cb20-15"></a><span class="co">#G2Comm &lt;- G2Comm[!grepl(&quot;_&quot;, G2Comm$bigram),]</span></span>
+<span id="cb20-16"><a href="data-import-and-clean.html#cb20-16"></a></span>
+<span id="cb20-17"><a href="data-import-and-clean.html#cb20-17"></a><span class="co">#rm(G2Comm_separated)</span></span>
+<span id="cb20-18"><a href="data-import-and-clean.html#cb20-18"></a><span class="co">#rm(G2Comm_filtered)</span></span></code></pre></div>
+</div>
+</div>
+<div id="count-1" class="section level3">
+<h3><span class="header-section-number">2.4.3</span> Count</h3>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="data-import-and-clean.html#cb21-1"></a>G1CommCount &lt;-<span class="st"> </span>G1Comm <span class="op">%&gt;%</span></span>
+<span id="cb21-2"><a href="data-import-and-clean.html#cb21-2"></a><span class="st">    </span><span class="kw">group_by</span>(subreddit) <span class="op">%&gt;%</span><span class="st"> </span><span class="co">#group words by affiliation label</span></span>
+<span id="cb21-3"><a href="data-import-and-clean.html#cb21-3"></a><span class="st">    </span><span class="kw">count</span>(subreddit, word, <span class="dt">sort =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co">#count and create column &#39;n&#39;</span></span>
+<span id="cb21-4"><a href="data-import-and-clean.html#cb21-4"></a><span class="st">    </span><span class="kw">ungroup</span>()</span>
+<span id="cb21-5"><a href="data-import-and-clean.html#cb21-5"></a></span>
+<span id="cb21-6"><a href="data-import-and-clean.html#cb21-6"></a><span class="co">#G2CommCount &lt;- G2Comm %&gt;% #repeat for bigrams</span></span>
+<span id="cb21-7"><a href="data-import-and-clean.html#cb21-7"></a><span class="co">#    group_by(subreddit) %&gt;%</span></span>
+<span id="cb21-8"><a href="data-import-and-clean.html#cb21-8"></a><span class="co">#    count(bigram, sort = FALSE) %&gt;%</span></span>
+<span id="cb21-9"><a href="data-import-and-clean.html#cb21-9"></a><span class="co">#    ungroup() </span></span>
+<span id="cb21-10"><a href="data-import-and-clean.html#cb21-10"></a></span>
+<span id="cb21-11"><a href="data-import-and-clean.html#cb21-11"></a><span class="kw">rm</span>(G1Comm)</span>
+<span id="cb21-12"><a href="data-import-and-clean.html#cb21-12"></a><span class="co">#rm(G2Comm)</span></span></code></pre></div>
+</div>
+</div>
+<div id="export" class="section level2">
+<h2><span class="header-section-number">2.5</span> Export</h2>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="data-import-and-clean.html#cb22-1"></a><span class="co">#write.csv(G1SubmCount, &quot;clean_data/1GSubm.csv&quot;, row.names = FALSE)</span></span>
+<span id="cb22-2"><a href="data-import-and-clean.html#cb22-2"></a><span class="co">#write.csv(G2SubmCount, &quot;clean_data/2GSubm.csv&quot;, row.names = FALSE)</span></span>
+<span id="cb22-3"><a href="data-import-and-clean.html#cb22-3"></a><span class="kw">write.csv</span>(SubmissionTkns, <span class="kw">paste0</span>(dataDir, <span class="st">&quot;/SubmTkns.csv&quot;</span>), <span class="dt">row.names =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="data-import-and-clean.html#cb23-1"></a><span class="kw">write.csv</span>(CommTkns, <span class="kw">paste0</span>(dataDir, <span class="st">&quot;/CommTkns.csv&quot;</span>), <span class="dt">row.names =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
+</div>
+<div id="works-cited" class="section level2">
+<h2><span class="header-section-number">2.6</span> Works Cited</h2>
+<p>Boe B (2014). PRAW: The Python Reddit API Wrapper. 2012-, <a href="https://github.com/praw-dev/praw/" class="uri">https://github.com/praw-dev/praw/</a> [Online; accessed 2017-09-29].</p>
+<p>Silge J, Robinson D (2016). “tidytext: Text Mining and Analysis Using Tidy Data Principles in R.” JOSS, 1(3). doi: 10.21105/joss.00037, <a href="http://dx.doi.org/10.21105/joss.00037" class="uri">http://dx.doi.org/10.21105/joss.00037</a>.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="data-import-and-clean.html#cb24-1"></a><span class="kw">dim</span>(Comments)</span></code></pre></div>
+<pre><code>## [1] 164800      8</code></pre>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="intro.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="token-analysis.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/02-Clean.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

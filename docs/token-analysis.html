@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 3 Token Analysis | An analysis of Cryptocurrency</title>
+  <meta name="description" content="Chapter 3 Token Analysis | An analysis of Cryptocurrency" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 3 Token Analysis | An analysis of Cryptocurrency" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  <meta name="github-repo" content="KalaniStanton/RedditCryptoEDA" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 3 Token Analysis | An analysis of Cryptocurrency" />
+  
+  
+  
+
+<meta name="author" content="Timothy McCormack, Carolyn Herrera, Wei Chun Tien," />
+
+
+<meta name="date" content="2020-11-09" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="data-import-and-clean.html"/>
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Reddit Crypto Analysis</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html"><i class="fa fa-check"></i><b>2</b> Data Import and Clean</a><ul>
+<li class="chapter" data-level="2.1" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#import-data"><i class="fa fa-check"></i><b>2.1</b> Import Data</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#fix-names"><i class="fa fa-check"></i><b>2.1.1</b> Fix Names</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#data-collection"><i class="fa fa-check"></i><b>2.2</b> Data Collection</a></li>
+<li class="chapter" data-level="2.3" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#clean"><i class="fa fa-check"></i><b>2.3</b> Clean</a><ul>
+<li class="chapter" data-level="2.3.1" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#submissions"><i class="fa fa-check"></i><b>2.3.1</b> Submissions</a></li>
+<li class="chapter" data-level="2.3.2" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#count"><i class="fa fa-check"></i><b>2.3.2</b> Count</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#comments"><i class="fa fa-check"></i><b>2.4</b> Comments</a><ul>
+<li class="chapter" data-level="2.4.1" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#clean-1"><i class="fa fa-check"></i><b>2.4.1</b> Clean</a></li>
+<li class="chapter" data-level="2.4.2" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#tokenize"><i class="fa fa-check"></i><b>2.4.2</b> Tokenize</a></li>
+<li class="chapter" data-level="2.4.3" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#count-1"><i class="fa fa-check"></i><b>2.4.3</b> Count</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#export"><i class="fa fa-check"></i><b>2.5</b> Export</a></li>
+<li class="chapter" data-level="2.6" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#works-cited"><i class="fa fa-check"></i><b>2.6</b> Works Cited</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="token-analysis.html"><a href="token-analysis.html"><i class="fa fa-check"></i><b>3</b> Token Analysis</a><ul>
+<li class="chapter" data-level="3.1" data-path="token-analysis.html"><a href="token-analysis.html#import"><i class="fa fa-check"></i><b>3.1</b> Import</a></li>
+<li class="chapter" data-level="3.2" data-path="token-analysis.html"><a href="token-analysis.html#token-counts"><i class="fa fa-check"></i><b>3.2</b> Token Counts</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="token-analysis.html"><a href="token-analysis.html#most-frequent-tokens"><i class="fa fa-check"></i><b>3.2.1</b> Most Frequent Tokens</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="token-analysis.html"><a href="token-analysis.html#wordclouds"><i class="fa fa-check"></i><b>3.3</b> Wordclouds</a><ul>
+<li class="chapter" data-level="3.3.1" data-path="token-analysis.html"><a href="token-analysis.html#all-words-submissions-and-comments"><i class="fa fa-check"></i><b>3.3.1</b> All words (Submissions and Comments)</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="token-analysis.html"><a href="token-analysis.html#tf-idf"><i class="fa fa-check"></i><b>3.4</b> TF-IDF</a></li>
+<li class="chapter" data-level="3.5" data-path="token-analysis.html"><a href="token-analysis.html#posts-over-time"><i class="fa fa-check"></i><b>3.5</b> Posts over time</a></li>
+<li class="chapter" data-level="3.6" data-path="token-analysis.html"><a href="token-analysis.html#currencies"><i class="fa fa-check"></i><b>3.6</b> Currencies</a><ul>
+<li class="chapter" data-level="3.6.1" data-path="token-analysis.html"><a href="token-analysis.html#assigning-identifiers"><i class="fa fa-check"></i><b>3.6.1</b> Assigning Identifiers</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">An analysis of Cryptocurrency</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="token-analysis" class="section level1">
+<h1><span class="header-section-number">Chapter 3</span> Token Analysis</h1>
+<p>[In-Progress]</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="token-analysis.html#cb26-1"></a>knitr<span class="op">::</span>opts_chunk<span class="op">$</span><span class="kw">set</span>(<span class="dt">message =</span> <span class="ot">FALSE</span>, <span class="dt">warning =</span> <span class="ot">FALSE</span>, <span class="dt">echo =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb26-2"><a href="token-analysis.html#cb26-2"></a><span class="co"># set to TRUE to run this on only one reference file</span></span>
+<span id="cb26-3"><a href="token-analysis.html#cb26-3"></a>debugging &lt;-<span class="st"> </span><span class="ot">FALSE</span></span>
+<span id="cb26-4"><a href="token-analysis.html#cb26-4"></a><span class="co"># this will expect the file or files to be in a subdirectory with the following name</span></span>
+<span id="cb26-5"><a href="token-analysis.html#cb26-5"></a>refsource &lt;-<span class="st"> &quot;MungingProj2&quot;</span></span>
+<span id="cb26-6"><a href="token-analysis.html#cb26-6"></a>dataDir &lt;-<span class="st"> &quot;Proj2Data&quot;</span></span>
+<span id="cb26-7"><a href="token-analysis.html#cb26-7"></a>workingDir &lt;-<span class="st"> </span>refsource</span>
+<span id="cb26-8"><a href="token-analysis.html#cb26-8"></a></span>
+<span id="cb26-9"><a href="token-analysis.html#cb26-9"></a><span class="co"># prefixes for all File reads and writes</span></span>
+<span id="cb26-10"><a href="token-analysis.html#cb26-10"></a><span class="co"># titles for tables</span></span>
+<span id="cb26-11"><a href="token-analysis.html#cb26-11"></a>titletext &lt;-<span class="st"> &quot;RedditCrypto&quot;</span></span>
+<span id="cb26-12"><a href="token-analysis.html#cb26-12"></a>srs =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;CryptoCurrency&quot;</span>,<span class="st">&quot;CryptoMarkets&quot;</span>)</span>
+<span id="cb26-13"><a href="token-analysis.html#cb26-13"></a></span>
+<span id="cb26-14"><a href="token-analysis.html#cb26-14"></a><span class="st">`</span><span class="dt">%notin%</span><span class="st">`</span> &lt;-<span class="st"> </span><span class="kw">Negate</span>(<span class="st">`</span><span class="dt">%in%</span><span class="st">`</span>)</span></code></pre></div>
+<div id="import" class="section level2">
+<h2><span class="header-section-number">3.1</span> Import</h2>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="token-analysis.html#cb27-1"></a><span class="co">#Submissions</span></span>
+<span id="cb27-2"><a href="token-analysis.html#cb27-2"></a><span class="co">#Subms1G&lt;- read.csv(paste0(dataDir, &quot;/clean_data/1GComms.csv&quot;)) #token counts by pol_group</span></span>
+<span id="cb27-3"><a href="token-analysis.html#cb27-3"></a><span class="co">#Subms2G&lt;- read.csv(&quot;clean_data/2GSubm.csv&quot;) #token counts by </span></span>
+<span id="cb27-4"><a href="token-analysis.html#cb27-4"></a><span class="co">#TknsS&lt;- read.csv(paste0(dataDir, &quot;/SubmTkns.csv&quot;)) #token counts (full dataset)</span></span>
+<span id="cb27-5"><a href="token-analysis.html#cb27-5"></a><span class="co">#Comments</span></span>
+<span id="cb27-6"><a href="token-analysis.html#cb27-6"></a><span class="co">#Comms1G&lt;- read.csv(paste0(dataDir, &quot;/clean_data/1GComms.csv&quot;))</span></span>
+<span id="cb27-7"><a href="token-analysis.html#cb27-7"></a><span class="co">#Comms2G &lt;- read.csv(&quot;clean_data/2GComms.csv&quot;)</span></span>
+<span id="cb27-8"><a href="token-analysis.html#cb27-8"></a>TknsC&lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="kw">paste0</span>(dataDir, <span class="st">&quot;/CommTkns.csv&quot;</span>))</span>
+<span id="cb27-9"><a href="token-analysis.html#cb27-9"></a><span class="co">#Matrices</span></span>
+<span id="cb27-10"><a href="token-analysis.html#cb27-10"></a><span class="co">#MtrxS &lt;- read.csv(&quot;clean_data/SubMtrx.csv&quot;)</span></span>
+<span id="cb27-11"><a href="token-analysis.html#cb27-11"></a><span class="co">#MtrxC &lt;- read.csv(paste0(dataDir,&quot;/CommMtrx.csv&quot;))</span></span>
+<span id="cb27-12"><a href="token-analysis.html#cb27-12"></a><span class="co">#MtrxU &lt;- read.csv(paste0(dataDir, &quot;/UserMtrx.csv&quot;))</span></span></code></pre></div>
+</div>
+<div id="token-counts" class="section level2">
+<h2><span class="header-section-number">3.2</span> Token Counts</h2>
+<p>Token counts are done at several different levels. The first being word frequency within each subreddit, which allows for a comparison of common words across communitas. The second is word frequency within each subreddit page (i.e. “Top”, “Controversial”, “Hot”), which allows for a comparison of common words across strata within each communitas.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="token-analysis.html#cb28-1"></a>allCount &lt;-TknsC <span class="op">%&gt;%</span></span>
+<span id="cb28-2"><a href="token-analysis.html#cb28-2"></a><span class="st">    </span><span class="kw">group_by</span>(subreddit) <span class="op">%&gt;%</span><span class="st"> </span><span class="co">#group words by affiliation label</span></span>
+<span id="cb28-3"><a href="token-analysis.html#cb28-3"></a><span class="st">    </span><span class="kw">count</span>(word, <span class="dt">sort =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
+<span id="cb28-4"><a href="token-analysis.html#cb28-4"></a><span class="st">    </span><span class="kw">ungroup</span>()</span></code></pre></div>
+<div id="most-frequent-tokens" class="section level3">
+<h3><span class="header-section-number">3.2.1</span> Most Frequent Tokens</h3>
+<p>The following code show the top 25 most frequently occuring words within each subreddit.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="token-analysis.html#cb29-1"></a>sr_all_n25 &lt;-<span class="st"> </span>allCount <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb29-2"><a href="token-analysis.html#cb29-2"></a><span class="st">  </span><span class="kw">group_by</span>(subreddit) <span class="op">%&gt;%</span></span>
+<span id="cb29-3"><a href="token-analysis.html#cb29-3"></a><span class="st">  </span><span class="kw">top_n</span>(<span class="dv">25</span>) <span class="op">%&gt;%</span></span>
+<span id="cb29-4"><a href="token-analysis.html#cb29-4"></a><span class="st">  </span><span class="kw">ungroup</span>()</span></code></pre></div>
+</div>
+</div>
+<div id="wordclouds" class="section level2">
+<h2><span class="header-section-number">3.3</span> Wordclouds</h2>
+<p>Wordclouds are then constructed using the top 50 words from each subreddit page.</p>
+<div id="all-words-submissions-and-comments" class="section level3">
+<h3><span class="header-section-number">3.3.1</span> All words (Submissions and Comments)</h3>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="token-analysis.html#cb30-1"></a><span class="co">#sr_allCount &lt;- allCount %&gt;% filter(!subreddit == &quot;r/all [control]&quot;)</span></span>
+<span id="cb30-2"><a href="token-analysis.html#cb30-2"></a>sr_allWC &lt;-<span class="st"> </span>allCount <span class="op">%&gt;%</span></span>
+<span id="cb30-3"><a href="token-analysis.html#cb30-3"></a><span class="st">  </span><span class="kw">top_n</span>(<span class="dv">100</span>) <span class="op">%&gt;%</span></span>
+<span id="cb30-4"><a href="token-analysis.html#cb30-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">prop =</span> n <span class="op">/</span><span class="st"> </span><span class="kw">max</span>(n))</span>
+<span id="cb30-5"><a href="token-analysis.html#cb30-5"></a></span>
+<span id="cb30-6"><a href="token-analysis.html#cb30-6"></a>color=<span class="kw">diverge_hcl</span>(<span class="kw">length</span>(sr_allWC<span class="op">$</span>prop))[<span class="kw">rank</span>(sr_allWC<span class="op">$</span>prop)]</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="token-analysis.html#cb31-1"></a><span class="kw">set.seed</span>(<span class="dv">29</span>)</span>
+<span id="cb31-2"><a href="token-analysis.html#cb31-2"></a><span class="kw">ggplot</span>(sr_allWC, <span class="kw">aes</span>(<span class="dt">label =</span> word, <span class="dt">size =</span> prop, <span class="dt">color =</span> prop)) <span class="op">+</span></span>
+<span id="cb31-3"><a href="token-analysis.html#cb31-3"></a><span class="st">    </span><span class="kw">geom_text_wordcloud_area</span>(<span class="dt">shape =</span> <span class="st">&#39;circle&#39;</span>, <span class="dt">rm_outside =</span> <span class="ot">TRUE</span>) <span class="op">+</span></span>
+<span id="cb31-4"><a href="token-analysis.html#cb31-4"></a><span class="st">    </span><span class="kw">scale_size_area</span>(<span class="dt">max_size =</span> <span class="dv">30</span>) <span class="op">+</span></span>
+<span id="cb31-5"><a href="token-analysis.html#cb31-5"></a><span class="st">    </span><span class="co">#scale_colour_gradient2(low = &quot;black&quot;, mid = &quot;red4&quot;, high = &quot;red&quot;, space = &quot;Lab&quot;, aesthetics = &quot;color&quot;) +</span></span>
+<span id="cb31-6"><a href="token-analysis.html#cb31-6"></a><span class="st">    </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
+<p><img src="bookdown-demo_files/figure-html/wordcloud1-1.png" width="672" /></p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="token-analysis.html#cb32-1"></a><span class="kw">ggsave</span>(<span class="st">&quot;CC_wordcloud.pdf&quot;</span>, <span class="dt">device =</span> <span class="st">&quot;pdf&quot;</span>, <span class="dt">path =</span> <span class="st">&quot;CCViz&quot;</span>, <span class="dt">height =</span> <span class="dv">10</span>, <span class="dt">width =</span> <span class="dv">16</span>)</span></code></pre></div>
+<p>TF_IDF is a tool used to show distinct word usage across groups by taking the difference between the term frequency <code>tf</code> and inverse document frequency <code>idf</code>, ultimately revealing the tokens that are most unique to each subreddit.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="token-analysis.html#cb33-1"></a><span class="co">#Create TF-IDF matrix for Controversial Submissions</span></span>
+<span id="cb33-2"><a href="token-analysis.html#cb33-2"></a>allIDF &lt;-<span class="st"> </span>allCount <span class="op">%&gt;%</span></span>
+<span id="cb33-3"><a href="token-analysis.html#cb33-3"></a><span class="st">  </span><span class="kw">bind_tf_idf</span>(word, subreddit, n) <span class="op">%&gt;%</span><span class="st"> </span><span class="co">#construct tf_idf by affiliation label</span></span>
+<span id="cb33-4"><a href="token-analysis.html#cb33-4"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(tf_idf)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb33-5"><a href="token-analysis.html#cb33-5"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">word =</span> <span class="kw">factor</span>(word, <span class="dt">levels =</span> <span class="kw">rev</span>(<span class="kw">unique</span>(word))))</span></code></pre></div>
+</div>
+</div>
+<div id="tf-idf" class="section level2">
+<h2><span class="header-section-number">3.4</span> TF-IDF</h2>
+<p>The below figure shows that the religious communitas can be identified through the symbols presented in their distinguishing tokens. This methodology is useful for exploring the divergent symbolic identities of collective consciousnesses. The tf-ifd analysis below presents us with sets of names, concepts, and phrases that reference the symbolic systems of each religious identity.</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="token-analysis.html#cb34-1"></a>allIDF <span class="op">%&gt;%</span></span>
+<span id="cb34-2"><a href="token-analysis.html#cb34-2"></a><span class="st">  </span><span class="kw">group_by</span>(subreddit) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb34-3"><a href="token-analysis.html#cb34-3"></a><span class="st">  </span><span class="kw">top_n</span>(<span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb34-4"><a href="token-analysis.html#cb34-4"></a><span class="st">  </span><span class="kw">ungroup</span>()<span class="op">%&gt;%</span></span>
+<span id="cb34-5"><a href="token-analysis.html#cb34-5"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(word, tf_idf, <span class="dt">fill =</span> subreddit)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_col</span>(<span class="dt">show.legend =</span> <span class="ot">FALSE</span>) <span class="op">+</span><span class="st"> </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="ot">NULL</span>, <span class="dt">y =</span> <span class="st">&quot;tf-idf&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span>subreddit, <span class="dt">ncol =</span> <span class="dv">2</span>, <span class="dt">scales =</span> <span class="st">&quot;free_y&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">coord_flip</span>() <span class="op">+</span><span class="st"> </span><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">angle =</span> <span class="dv">45</span>, <span class="dt">hjust =</span> <span class="dv">1</span>))</span></code></pre></div>
+<p><img src="bookdown-demo_files/figure-html/all%20tf_idf-1.png" width="672" /></p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="token-analysis.html#cb35-1"></a><span class="kw">ggsave</span>(<span class="st">&quot;tf_idf.pdf&quot;</span>, <span class="dt">device =</span> <span class="st">&quot;pdf&quot;</span>, <span class="dt">path =</span> <span class="st">&quot;CCViz&quot;</span>, <span class="dt">height =</span> <span class="dv">8</span>, <span class="dt">width =</span> <span class="dv">6</span>)</span></code></pre></div>
+</div>
+<div id="posts-over-time" class="section level2">
+<h2><span class="header-section-number">3.5</span> Posts over time</h2>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="token-analysis.html#cb36-1"></a>TknsByDate &lt;-<span class="st"> </span>TknsC <span class="op">%&gt;%</span></span>
+<span id="cb36-2"><a href="token-analysis.html#cb36-2"></a><span class="st">  </span><span class="kw">separate</span>(created, <span class="kw">c</span>(<span class="st">&quot;created&quot;</span>, <span class="st">&quot;time&quot;</span>), <span class="st">&quot; &quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb36-3"><a href="token-analysis.html#cb36-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">created =</span> <span class="kw">ymd</span>(created)) <span class="op">%&gt;%</span></span>
+<span id="cb36-4"><a href="token-analysis.html#cb36-4"></a><span class="st">  </span><span class="kw">mutate_at</span>(<span class="kw">vars</span>(created), <span class="kw">funs</span>(year, month, day))</span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="token-analysis.html#cb37-1"></a>TknsByMonth &lt;-TknsByDate <span class="op">%&gt;%</span></span>
+<span id="cb37-2"><a href="token-analysis.html#cb37-2"></a><span class="st">    </span><span class="kw">filter</span>(year <span class="op">&gt;</span><span class="st"> </span><span class="dv">2015</span>) <span class="op">%&gt;%</span></span>
+<span id="cb37-3"><a href="token-analysis.html#cb37-3"></a><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">Month =</span> <span class="kw">make_date</span>(year, month))</span>
+<span id="cb37-4"><a href="token-analysis.html#cb37-4"></a></span>
+<span id="cb37-5"><a href="token-analysis.html#cb37-5"></a>monthCount &lt;-<span class="st"> </span>TknsByMonth <span class="op">%&gt;%</span></span>
+<span id="cb37-6"><a href="token-analysis.html#cb37-6"></a><span class="st">    </span><span class="kw">group_by</span>(subreddit, month, year) <span class="op">%&gt;%</span><span class="st"> </span><span class="co">#group words by affiliation label</span></span>
+<span id="cb37-7"><a href="token-analysis.html#cb37-7"></a><span class="st">    </span><span class="kw">count</span>(word, <span class="dt">sort =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co">#count and create column &#39;n&#39;</span></span>
+<span id="cb37-8"><a href="token-analysis.html#cb37-8"></a><span class="st">    </span><span class="kw">top_n</span>(<span class="dv">10</span>, n) <span class="op">%&gt;%</span></span>
+<span id="cb37-9"><a href="token-analysis.html#cb37-9"></a><span class="st">    </span><span class="kw">ungroup</span>()</span>
+<span id="cb37-10"><a href="token-analysis.html#cb37-10"></a></span>
+<span id="cb37-11"><a href="token-analysis.html#cb37-11"></a>monthCount &lt;-<span class="st"> </span>monthCount <span class="op">%&gt;%</span></span>
+<span id="cb37-12"><a href="token-analysis.html#cb37-12"></a><span class="st">    </span><span class="kw">group_by</span>(subreddit, month, year) <span class="op">%&gt;%</span></span>
+<span id="cb37-13"><a href="token-analysis.html#cb37-13"></a><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">prop =</span> n <span class="op">/</span><span class="st"> </span><span class="kw">max</span>(n))</span>
+<span id="cb37-14"><a href="token-analysis.html#cb37-14"></a>    </span>
+<span id="cb37-15"><a href="token-analysis.html#cb37-15"></a><span class="kw">table</span>(monthCount<span class="op">$</span>subreddit)</span></code></pre></div>
+<pre><code>## 
+## CryptoCurrency  CryptoMarkets 
+##            396            435</code></pre>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="token-analysis.html#cb39-1"></a><span class="kw">ggplot</span>(monthCount, <span class="kw">aes</span>(</span>
+<span id="cb39-2"><a href="token-analysis.html#cb39-2"></a>  <span class="dt">label =</span> word,</span>
+<span id="cb39-3"><a href="token-analysis.html#cb39-3"></a>  <span class="dt">size =</span> prop,</span>
+<span id="cb39-4"><a href="token-analysis.html#cb39-4"></a>  <span class="dt">color =</span> prop</span>
+<span id="cb39-5"><a href="token-analysis.html#cb39-5"></a>)) <span class="op">+</span></span>
+<span id="cb39-6"><a href="token-analysis.html#cb39-6"></a><span class="st">  </span><span class="kw">geom_text_wordcloud_area</span>(<span class="dt">rm_outside =</span> <span class="ot">TRUE</span>) <span class="op">+</span></span>
+<span id="cb39-7"><a href="token-analysis.html#cb39-7"></a><span class="st">  </span><span class="kw">scale_size_area</span>(<span class="dt">max_size =</span> <span class="dv">20</span>) <span class="op">+</span></span>
+<span id="cb39-8"><a href="token-analysis.html#cb39-8"></a><span class="st">  </span><span class="co">#scale_colour_gradient2(low = &quot;black&quot;, mid = &quot;red4&quot;, high = &quot;red&quot;, space = &quot;Lab&quot;, aesthetics = &quot;color&quot;) +</span></span>
+<span id="cb39-9"><a href="token-analysis.html#cb39-9"></a><span class="st">  </span><span class="kw">theme_minimal</span>() <span class="op">+</span></span>
+<span id="cb39-10"><a href="token-analysis.html#cb39-10"></a><span class="st">  </span><span class="kw">facet_grid</span>(<span class="kw">vars</span>(month), <span class="kw">vars</span>(year))</span></code></pre></div>
+<p><img src="bookdown-demo_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="token-analysis.html#cb40-1"></a><span class="kw">ggsave</span>(</span>
+<span id="cb40-2"><a href="token-analysis.html#cb40-2"></a>  <span class="st">&quot;CC_timeline.pdf&quot;</span>,</span>
+<span id="cb40-3"><a href="token-analysis.html#cb40-3"></a>  <span class="dt">device =</span> <span class="st">&quot;pdf&quot;</span>,</span>
+<span id="cb40-4"><a href="token-analysis.html#cb40-4"></a>  <span class="dt">path =</span> <span class="st">&quot;CCViz&quot;</span>,</span>
+<span id="cb40-5"><a href="token-analysis.html#cb40-5"></a>  <span class="dt">height =</span> <span class="dv">30</span>,</span>
+<span id="cb40-6"><a href="token-analysis.html#cb40-6"></a>  <span class="dt">width =</span> <span class="dv">20</span></span>
+<span id="cb40-7"><a href="token-analysis.html#cb40-7"></a>)</span></code></pre></div>
+</div>
+<div id="currencies" class="section level2">
+<h2><span class="header-section-number">3.6</span> Currencies</h2>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="token-analysis.html#cb41-1"></a>BTC &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Bitcoin&quot;</span>, <span class="st">&quot;bitcoin&quot;</span>, <span class="st">&quot;BTC&quot;</span>, <span class="st">&quot;btc&quot;</span>)</span>
+<span id="cb41-2"><a href="token-analysis.html#cb41-2"></a>ETH &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Ethereum&quot;</span>, <span class="st">&quot;ethereum&quot;</span>, <span class="st">&quot;ETH&quot;</span>, <span class="st">&quot;eth&quot;</span>)</span>
+<span id="cb41-3"><a href="token-analysis.html#cb41-3"></a>XRP &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Ripple&quot;</span>, <span class="st">&quot;ripple&quot;</span>, <span class="st">&quot;XRP&quot;</span>, <span class="st">&quot;xrp&quot;</span>)</span>
+<span id="cb41-4"><a href="token-analysis.html#cb41-4"></a>LTC &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Litecoin&quot;</span>, <span class="st">&quot;litecoin&quot;</span>, <span class="st">&quot;LTC&quot;</span>, <span class="st">&quot;ltc&quot;</span>)</span>
+<span id="cb41-5"><a href="token-analysis.html#cb41-5"></a>LINK &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Chainlink&quot;</span>, <span class="st">&quot;chainlink&quot;</span>, <span class="st">&quot;LINK&quot;</span>, <span class="st">&quot;link&quot;</span>)</span>
+<span id="cb41-6"><a href="token-analysis.html#cb41-6"></a></span>
+<span id="cb41-7"><a href="token-analysis.html#cb41-7"></a>currencies &lt;-<span class="st"> </span><span class="kw">c</span>(BTC, ETH, XRP, LTC, LINK)</span>
+<span id="cb41-8"><a href="token-analysis.html#cb41-8"></a></span>
+<span id="cb41-9"><a href="token-analysis.html#cb41-9"></a><span class="co"># For frequency analysis</span></span>
+<span id="cb41-10"><a href="token-analysis.html#cb41-10"></a>CurTkns &lt;-<span class="st"> </span>TknsByDate <span class="op">%&gt;%</span></span>
+<span id="cb41-11"><a href="token-analysis.html#cb41-11"></a><span class="st">  </span><span class="kw">filter</span>(word <span class="op">%in%</span><span class="st"> </span>currencies)</span>
+<span id="cb41-12"><a href="token-analysis.html#cb41-12"></a></span>
+<span id="cb41-13"><a href="token-analysis.html#cb41-13"></a><span class="co"># For sentiment analysis</span></span>
+<span id="cb41-14"><a href="token-analysis.html#cb41-14"></a>CurComms &lt;-<span class="st"> </span>CommData <span class="op">%&gt;%</span></span>
+<span id="cb41-15"><a href="token-analysis.html#cb41-15"></a><span class="st">  </span><span class="kw">filter</span>(comm_id <span class="op">%in%</span><span class="st"> </span>CurTkns<span class="op">$</span>comm_id)</span></code></pre></div>
+<div id="assigning-identifiers" class="section level3">
+<h3><span class="header-section-number">3.6.1</span> Assigning Identifiers</h3>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="token-analysis.html#cb42-1"></a>CurTkns &lt;-<span class="st"> </span>CurTkns <span class="op">%&gt;%</span></span>
+<span id="cb42-2"><a href="token-analysis.html#cb42-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Coin =</span> <span class="kw">case_when</span>(</span>
+<span id="cb42-3"><a href="token-analysis.html#cb42-3"></a>    .<span class="op">$</span>word <span class="op">%in%</span><span class="st"> </span>BTC <span class="op">~</span><span class="st"> &quot;BTC&quot;</span>,</span>
+<span id="cb42-4"><a href="token-analysis.html#cb42-4"></a>    .<span class="op">$</span>word <span class="op">%in%</span><span class="st"> </span>ETH <span class="op">~</span><span class="st"> &quot;ETH&quot;</span>,</span>
+<span id="cb42-5"><a href="token-analysis.html#cb42-5"></a>    .<span class="op">$</span>word <span class="op">%in%</span><span class="st"> </span>XRP <span class="op">~</span><span class="st"> &quot;XRP&quot;</span>,</span>
+<span id="cb42-6"><a href="token-analysis.html#cb42-6"></a>    .<span class="op">$</span>word <span class="op">%in%</span><span class="st"> </span>LTC <span class="op">~</span><span class="st"> &quot;LTC&quot;</span>,</span>
+<span id="cb42-7"><a href="token-analysis.html#cb42-7"></a>    .<span class="op">$</span>word <span class="op">%in%</span><span class="st"> </span>LINK <span class="op">~</span><span class="st"> &quot;LINK&quot;</span></span>
+<span id="cb42-8"><a href="token-analysis.html#cb42-8"></a>  ))</span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="token-analysis.html#cb43-1"></a>curTknsByMonth &lt;-CurTkns <span class="op">%&gt;%</span></span>
+<span id="cb43-2"><a href="token-analysis.html#cb43-2"></a><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">Month =</span> <span class="kw">make_date</span>(year, month))</span>
+<span id="cb43-3"><a href="token-analysis.html#cb43-3"></a></span>
+<span id="cb43-4"><a href="token-analysis.html#cb43-4"></a>curCounts &lt;-<span class="st"> </span>curTknsByMonth <span class="op">%&gt;%</span></span>
+<span id="cb43-5"><a href="token-analysis.html#cb43-5"></a><span class="st">    </span><span class="kw">group_by</span>(Coin) <span class="op">%&gt;%</span><span class="st"> </span><span class="co">#group words by affiliation label</span></span>
+<span id="cb43-6"><a href="token-analysis.html#cb43-6"></a><span class="st">    </span><span class="kw">count</span>(word, <span class="dt">sort =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co">#count and create column &#39;n&#39;</span></span>
+<span id="cb43-7"><a href="token-analysis.html#cb43-7"></a><span class="st">    </span><span class="kw">ungroup</span>()</span>
+<span id="cb43-8"><a href="token-analysis.html#cb43-8"></a></span>
+<span id="cb43-9"><a href="token-analysis.html#cb43-9"></a>curCountsbyMonth &lt;-<span class="st"> </span>curTknsByMonth <span class="op">%&gt;%</span></span>
+<span id="cb43-10"><a href="token-analysis.html#cb43-10"></a><span class="st">    </span><span class="kw">group_by</span>(Coin, Month) <span class="op">%&gt;%</span><span class="st"> </span><span class="co">#group words by affiliation label</span></span>
+<span id="cb43-11"><a href="token-analysis.html#cb43-11"></a><span class="st">    </span><span class="kw">count</span>(word, <span class="dt">sort =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co">#count and create column &#39;n&#39;</span></span>
+<span id="cb43-12"><a href="token-analysis.html#cb43-12"></a><span class="st">    </span><span class="kw">ungroup</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="token-analysis.html#cb44-1"></a><span class="kw">ggplot</span>(curCounts) <span class="op">+</span></span>
+<span id="cb44-2"><a href="token-analysis.html#cb44-2"></a><span class="st">  </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">x =</span> Coin, <span class="dt">y =</span> n, <span class="dt">fill =</span> Coin), <span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>)</span></code></pre></div>
+<p><img src="bookdown-demo_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="token-analysis.html#cb45-1"></a><span class="kw">ggplot</span>(curCountsbyMonth) <span class="op">+</span></span>
+<span id="cb45-2"><a href="token-analysis.html#cb45-2"></a><span class="st">  </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">x =</span> Coin, <span class="dt">y =</span> n, <span class="dt">fill =</span> Coin), <span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>) <span class="op">+</span></span>
+<span id="cb45-3"><a href="token-analysis.html#cb45-3"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>Month)</span></code></pre></div>
+<p><img src="bookdown-demo_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="data-import-and-clean.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/03-TokenAnalysis.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
