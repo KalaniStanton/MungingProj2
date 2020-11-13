@@ -1,6 +1,11 @@
 # Sentiment Analysis {#sentiments}
 
 ```{r}
+dataDir <- "Proj2Data"
+```
+
+
+```{r}
 curTknsByMonth <- read.csv(paste0(dataDir, "/CoinTknsMonthly.csv"))
 CommTkns <- read.csv(paste0(dataDir, "/CommTkns.csv"))
 ```
@@ -21,7 +26,7 @@ currTkns <- CommTkns %>%
 nrc<- get_sentiments("nrc")
 ```
 
-`r kbl(head(nrcSent))`
+`r kbl(head(nrc))`
 
 ```{r}
 sntmntByMonth <- currTkns %>%
@@ -33,6 +38,6 @@ sntmntByMonth <- currTkns %>%
 ```{r}
 ggplot(sntmntByMonth, aes(x = Month, y = n, color = sentiment)) +
   geom_line() +
-  facet_wrap(~Coin, scale = "free")
+  facet_wrap(~Coin, scale = "free_y")
 ```
 

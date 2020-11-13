@@ -1,4 +1,4 @@
-# Token Analysis {#tokens}
+# Token Analysis {#token-analysis}
 
 [In-Progress]
 
@@ -27,8 +27,6 @@ TknsC<- read.csv(paste0(dataDir, "/CommTkns.csv"))
 ```
 
 ## Token Counts
-
-Token counts are done at several different levels. The first being word frequency within each subreddit, which allows for a comparison of common words across communitas. The second is word frequency within each subreddit page (i.e. "Top", "Controversial", "Hot"), which allows for a comparison of common words across strata within each communitas.
 
 ```{r count}
 allCount <-TknsC %>%
@@ -89,8 +87,6 @@ allIDF <- allCount %>%
 
 ## TF-IDF
 
-The below figure shows that the religious communitas can be identified through the symbols presented in their distinguishing tokens. This methodology is useful for exploring the divergent symbolic identities of collective consciousnesses. The tf-ifd analysis below presents us with sets of names, concepts, and phrases that reference the symbolic systems of each religious identity. 
-
 ```{r all tf_idf}
 allIDF %>%
   group_by(subreddit) %>% 
@@ -100,8 +96,6 @@ allIDF %>%
 
 ggsave("tf_idf.pdf", device = "pdf", path = "CCViz", height = 8, width = 6)
 ```
-
-
 
 
 ## Posts over time
