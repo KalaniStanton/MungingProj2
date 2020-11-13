@@ -1,33 +1,6 @@
-# Token Analysis
+# Token Analysis {#tokens}
 
 [In-Progress]
-
-```{r packages, echo = TRUE, include = FALSE}
-library(tidytext)
-library(tidyverse)
-library(dplyr)
-library(stringr)
-library(knitr)
-library(RColorBrewer)
-library(DT)
-library(tidygraph)
-library(ggraph)
-library(tm)
-library(kableExtra)
-#install.packages("ggwordcloud")
-library(ggwordcloud)
-library(xtable)
-#install.packages("Hmisc")
-library(Hmisc)
-#install.packages("lubridate")
-library(lubridate)
-#install.packages("wordcloud")
-library(wordcloud)
-#install.packages("viridis")
-library(viridis)
-#install.packages("colorspace")
-library(colorspace)
-```
 
 ```{r TA_setup}
 knitr::opts_chunk$set(message = FALSE, warning = FALSE, echo = TRUE)
@@ -48,19 +21,9 @@ srs = c("CryptoCurrency","CryptoMarkets")
 
 ## Import
 
-```{r import_submissions}
-#Submissions
-#Subms1G<- read.csv(paste0(dataDir, "/clean_data/1GComms.csv")) #token counts by pol_group
-#Subms2G<- read.csv("clean_data/2GSubm.csv") #token counts by 
-#TknsS<- read.csv(paste0(dataDir, "/SubmTkns.csv")) #token counts (full dataset)
-#Comments
-#Comms1G<- read.csv(paste0(dataDir, "/clean_data/1GComms.csv"))
-#Comms2G <- read.csv("clean_data/2GComms.csv")
+```{r import_submissions, include = FALSE}
+TknsS<- read.csv(paste0(dataDir, "/SubmTkns.csv")) 
 TknsC<- read.csv(paste0(dataDir, "/CommTkns.csv"))
-#Matrices
-#MtrxS <- read.csv("clean_data/SubMtrx.csv")
-#MtrxC <- read.csv(paste0(dataDir,"/CommMtrx.csv"))
-#MtrxU <- read.csv(paste0(dataDir, "/UserMtrx.csv"))
 ```
 
 ## Token Counts
@@ -68,7 +31,6 @@ TknsC<- read.csv(paste0(dataDir, "/CommTkns.csv"))
 Token counts are done at several different levels. The first being word frequency within each subreddit, which allows for a comparison of common words across communitas. The second is word frequency within each subreddit page (i.e. "Top", "Controversial", "Hot"), which allows for a comparison of common words across strata within each communitas.
 
 ```{r count}
-
 allCount <-TknsC %>%
     group_by(subreddit) %>% #group words by affiliation label
     count(word, sort = TRUE) %>%
@@ -194,11 +156,10 @@ ggsave(
 ## Currencies
 
 ```{r}
-BTC <- c("Bitcoin", "bitcoin", "BTC", "btc")
-ETH <- c("Ethereum", "ethereum", "ETH", "eth")
-XRP <- c("Ripple", "ripple", "XRP", "xrp")
-LTC <- c("Litecoin", "litecoin", "LTC", "ltc")
-LINK <- c("Chainlink", "chainlink", "LINK", "link")
+BTC <- c("Bitcoin", "bitcoin", "BTC", "btc", "Btc")
+ETH <- c("Ethereum", "ethereum", "ETH", "eth", "Eth")
+XRP <- c("Ripple", "ripple", "XRP", "xrp", "Xrp")
+LTC <- c("Litecoin", "litecoin", "LTC", "ltc", "Ltc")
 
 currencies <- c(BTC, ETH, XRP, LTC, LINK)
 
@@ -226,6 +187,7 @@ CurTkns <- CurTkns %>%
 
 
 ```{r}
+# Establish date column for grouping
 curTknsByMonth <-CurTkns %>%
     mutate(Month = make_date(year, month))
 
@@ -250,5 +212,9 @@ ggplot(curCounts) +
 ggplot(curCountsbyMonth) +
   geom_bar(aes(x = Coin, y = n, fill = Coin), stat = "identity") +
   facet_wrap(~Month)
+```
+
+```{r}
+write.csv(curTknsByMonth, paste0(dataDir, "/CoinTknsMonthly.csv"), row.names = FALSE)
 ```
 

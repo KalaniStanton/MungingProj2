@@ -1,0 +1,38 @@
+# Sentiment Analysis {#sentiments}
+
+```{r}
+curTknsByMonth <- read.csv(paste0(dataDir, "/CoinTknsMonthly.csv"))
+CommTkns <- read.csv(paste0(dataDir, "/CommTkns.csv"))
+```
+
+
+## Data Shaping
+
+To group comments and their sentiments by `Coin` we have to first assign this identifier to the tokens via their associated `comm_id`.
+
+```{r}
+currTkns <- CommTkns %>%
+  inner_join(curTknsByMonth[,c("Coin","Month","comm_id")], by = "comm_id")
+```
+
+### `get_sentiments()`
+
+```{r}
+nrc<- get_sentiments("nrc")
+```
+
+`r kbl(head(nrcSent))`
+
+```{r}
+sntmntByMonth <- currTkns %>%
+  inner_join(nrc) %>%
+  group_by(Coin, Month) %>%
+  count(sentiment)
+```
+
+```{r}
+ggplot(sntmntByMonth, aes(x = Month, y = n, color = sentiment)) +
+  geom_line() +
+  facet_wrap(~Coin, scale = "free")
+```
+

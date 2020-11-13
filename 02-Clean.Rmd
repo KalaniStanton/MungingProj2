@@ -1,19 +1,4 @@
-# Data Import and Clean
-
-```{r, message = FALSE}
-library(tidyverse)
-library(tidytext)
-library(textclean)
-library(dplyr)
-library(stringr)
-library(knitr)
-library(wordcloud)
-library(kableExtra)
-library(DT)
-library(tidygraph)
-library(ggraph)
-library(tm)
-```
+# Cleaning and Tokenization {#clean}
 
 ```{r clean_setup}
 knitr::opts_chunk$set(message = FALSE, warning = FALSE, echo = TRUE)
@@ -32,7 +17,8 @@ srs = c("CryptoCurrency","CryptoMarkets")
 `%notin%` <- Negate(`%in%`)
 ```
 
-## Import Data
+## Import Clean
+
 
 ```{r}
 subm_fnames <- list.files(dataDir, pattern = "*_submissions.csv", full.names = TRUE)
@@ -64,17 +50,13 @@ SubmData <- SubmData %>%
   ungroup()
 ```
 
-## Data Collection
-
+### Subreddit information
 ```{r}
-
 submnums <- table(SubmData$subreddit)
 SubmNums <- as.data.frame(submnums, .name_repair = "minimal")
 colnames(SubmNums)[1] <- "Subreddit"
 ggplot(SubmNums, aes(x = Subreddit, y = Freq, fill = Subreddit)) + geom_bar(stat = "identity") + scale_y_continuous(name="# of Submissions by Subreddit", labels = scales::comma)
-
 ```
-
 
 ```{r}
 c <- CommData
@@ -110,8 +92,11 @@ table(SubmData$subreddit)
 table(CommData$subreddit)
 ```
 
+## Submissions
 
-## Clean
+The analysis of langauge begins by quantifying the presence of words in each Subm, through the process of *tokenization*. *Tokens* are discrete strings of words or characters that can be isolated as n-grams; with *n* pertaining to the number of words in each token. Tokens are pulled from the body of text that is most informative for the purposes of analysis. For submissions, the informative text is the *title* of the submission, which contains information on topics; whereas, for comments, the informative text is the `comment` itself. 
+
+### Clean
 
 To ensure that our data accurately represent activity within the communitas, we want to ensure that each observation is a unique instance of engagement. Reposts tend to be common on reddit, so using a `distinct()` function on the text column will remove any duplicate posts. Additionally, any posts that are removed from the subreddits return  an `NA` value in `user` column, thus we can remove deleted comments by filtering out all non `user == NA`.
 
@@ -128,9 +113,6 @@ Submissions <- SubmData %>%
 paste("Removed", nrow(SubmData) - nrow(Submissions),"submissions.")
 ```
 
-### Submissions
-
-The analysis of langauge begins by quantifying the presence of words in each Subm, through the process of *tokenization*. *Tokens* are discrete strings of words or characters that can be isolated as n-grams; with *n* pertaining to the number of words in each token. Tokens are pulled from the body of text that is most informative for the purposes of analysis. For submissions, the informative text is the *title* of the submission, which contains information on topics; whereas, for comments, the informative text is the `comment` itself. 
 
 ```{r tokenize_submissions}
 data(stop_words)
@@ -149,7 +131,8 @@ SubmissionTkns <- Submissions %>%
 
 
 As part of the tokenization process for submissions, we remove stop words (e.g. "and", "a", "the") because we are interested in using our tokens to identify prevalent topics of discussion and attitudes in the religiously affiliated social clusters. In contrast, stop words are not removed from text data in comments because they are useful in the analysis of linguistic sentiment and behavior.
-#### 1-grams (Clean)
+
+#### Tokens
 
 ```{r}
 #Create object for numbers, so that we can remove them from the data
@@ -162,50 +145,6 @@ SubmissionTkns <- SubmissionTkns %>%
 
 G1Subm <- SubmissionTkns
 
-```
-
-#### 2-grams (Clean)
-
-2-gram code is not used in analysis due to unsolved cleaning error.
-
-```{r}
-#G2Subm_separated <- G2Subm %>% #Separate bigrams to remove stopwords and transitional phrases
-#  separate(bigram, c("word1", "word2"), sep = " ") #run boolean functions for cleaning on `word1` and `word2`
-
-#G2Subm_filtered <- G2Subm_separated %>% 
-#  filter(!word1 %in% stop_words$word) %>% #remove stop words
-#  filter(!word2 %in% stop_words$word) %>%
-#  filter(!word1 == "NA") %>% #remove anomylous strings
-#  filter(!word2 == "NA") %>%
-#  filter(!word1 %in% nums) %>% #remove numbers
-#  filter(!word2 %in% nums)
-
-#G2Subm <- G2Subm_filtered %>% 
-#  unite(bigram, word1, word2, sep = " ")#reunify cleaned word columns
-
-#G2Subm <- G2Subm[!grepl("_", G2Subm$bigram),]
-
-#rm(G2Subm_separated)
-#rm(G2Subm_filtered)
-```
-
-### Count
-
-Following tokenization, the presence of each n-gram is tallied within each communitas. The tallies are then sorted to show what the most frequently occuring words are in each category.
-
-```{r}
-G1SubmCount <- G1Subm %>%
-    group_by(subreddit) %>% #group words by affiliation label
-    count(word, sort = FALSE) %>% #count and create column 'n'
-    ungroup()
-
-#G2SubmCount <- G2Subm %>% #repeat for bigrams
-#    group_by(subreddit) %>%
-#    count(bigram, sort = FALSE) %>%
-#    ungroup() 
-
-rm(G1Subm)
-#rm(G2Subm)
 ```
 
 ## Comments 
@@ -240,21 +179,14 @@ Comments$text <-stringi::stri_trans_general(Comments$text, "latin-ascii") #conve
 Comments$text <- str_remove_all(Comments$text, url_regex)
 ```
 
-### Tokenize
+#### Tokenize
 
 ```{r}
 #tokenize
 G1Comm <- Comments %>%
-  unnest_tokens(word, text) # %>%
-    #ungroup()
-
-#G2Comm <- Comments %>%
-#    #group_by(subreddit) %>%
-#    unnest_tokens(bigram, text, token = #"ngrams", n = 2, n_min = 2) #%>% #repeat above as bigram
-    #ungroup()
+  unnest_tokens(word, text)
 ```
 
-#### 1-grams
 
 ```{r}
 #Create object for numbers, so that we can remove them from the data
@@ -276,53 +208,9 @@ G1Comm <- CommTkns
 paste("Removed", nrow(CommData) - nrow(Comments),"tokens")
 ```
 
-#### 2-grams (Clean)
-
-2-gram code is not used in analysis due to unsolved cleaning error.
-
-```{r}
-#G2Comm_separated <- G2Comm %>% #Separate bigrams to remove stopwords and transitional phrases
-#  separate(bigram, c("word1", "word2"), sep = " ") #run boolean functions for cleaning on `word1` and `word2`
-
-#G2Comm_filtered <- G2Comm_separated %>% 
-#  filter(!word1 %in% stop_words$word) %>% #remove stop words
-#  filter(!word2 %in% stop_words$word) %>%
-#  filter(!word1 == "NA") %>% #remove anomalous strings
-#  filter(!word2 == "NA") %>%
-#  filter(!word1 %in% nums) %>% #remove numbers
-#  filter(!word2 %in% nums)
-
-#G2Comm <- G2Comm_filtered %>% 
-#  unite(bigram, word1, word2, sep = " ")#reunify cleaned word columns
-
-#G2Comm <- G2Comm[!grepl("_", G2Comm$bigram),]
-
-#rm(G2Comm_separated)
-#rm(G2Comm_filtered)
-```
-
-### Count
-
-```{r}
-G1CommCount <- G1Comm %>%
-    group_by(subreddit) %>% #group words by affiliation label
-    count(subreddit, word, sort = FALSE) %>% #count and create column 'n'
-    ungroup()
-
-#G2CommCount <- G2Comm %>% #repeat for bigrams
-#    group_by(subreddit) %>%
-#    count(bigram, sort = FALSE) %>%
-#    ungroup() 
-
-rm(G1Comm)
-#rm(G2Comm)
-```
-
 ## Export
 
 ```{r export_submissions}
-#write.csv(G1SubmCount, "clean_data/1GSubm.csv", row.names = FALSE)
-#write.csv(G2SubmCount, "clean_data/2GSubm.csv", row.names = FALSE)
 write.csv(SubmissionTkns, paste0(dataDir, "/SubmTkns.csv"), row.names = FALSE)
 ```
 

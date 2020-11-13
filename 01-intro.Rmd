@@ -1,3 +1,24 @@
 # Introduction {#intro}
 
+Lorem Ipsum Dolor
 
+```{r, message = FALSE}
+library(tidyverse)
+library(tidytext)
+library(textclean)
+library(dplyr)
+library(stringr)
+library(knitr)
+library(wordcloud)
+library(kableExtra)
+library(DT)
+library(tidygraph)
+library(ggraph)
+library(tm)
+library(ggwordcloud)
+library(Hmisc)
+library(lubridate)
+library(wordcloud)
+library(viridis)
+library(colorspace)
+```
