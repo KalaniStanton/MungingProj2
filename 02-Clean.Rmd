@@ -122,11 +122,6 @@ SubmissionTkns <- Submissions %>%
     unnest_tokens(word, text) %>%
     ungroup()
 
-#G2Subm <- Submissions %>%
-#    group_by(subreddit) %>%
-#    unnest_tokens(bigram, text, token = "ngrams", n = 2, n_min = #2) %>% #repeat above as bigram
-#    ungroup()
-
 ```
 
 

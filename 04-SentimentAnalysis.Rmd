@@ -40,4 +40,19 @@ ggplot(sntmntByMonth, aes(x = Month, y = n, color = sentiment)) +
   geom_line() +
   facet_wrap(~Coin, scale = "free_y")
 ```
+```{r}
+pBTC <- Quandl('BITFINEX/BTCUSD')
+pETH <- Quandl('BITFINEX/ETHUSD')
+pLTC <- Quandl('BITFINEX/LTCUSD')
+pXRP <- Quandl('BITFINEX/XRPUSD')
+```
+
+```{r}
+pBTC["Coin"] <- "BTC"
+pETH["Coin"] <- "ETH"
+pLTC["Coin"] <- "LTC"
+pXRP["Coin"] <- "XRP"
+
+PricesByCoin <- rbind(pBTC, pETH, pLTC, pXRP)
+```
 
