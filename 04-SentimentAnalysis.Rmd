@@ -6,7 +6,7 @@ dataDir <- "Proj2Data"
 
 
 ```{r}
-curTknsByMonth <- read.csv(paste0(dataDir, "/CoinTknsMonthly.csv"))
+currTknsByMonth <- read.csv(paste0(dataDir, "/CoinTknsMonthly.csv"))
 CommTkns <- read.csv(paste0(dataDir, "/CommTkns.csv"))
 ```
 
@@ -17,7 +17,7 @@ To group comments and their sentiments by `Coin` we have to first assign this id
 
 ```{r}
 currTkns <- CommTkns %>%
-  inner_join(curTknsByMonth[,c("Coin","Month","comm_id")], by = "comm_id")
+  inner_join(currTknsByMonth[,c("Coin","Month","comm_id")], by = "comm_id")
 ```
 
 ### `get_sentiments()`
@@ -33,14 +33,14 @@ currSntmntTkns <- currTkns %>%
   inner_join(nrc)
 
 sntmntByMonth <-  currSntmntTkns %>%
-  group_by(Coin, Month) %>%
+  group_by(Month, Coin) %>%
   count(sentiment) %>%
   ungroup()
 ```
 
 ```{r}
-ggplot(sntmntByMonth, aes(x = Month, y = n)) +
-  geom_line(stat = "identity") +
+ggplot(sntmntByMonth, aes(x = Month, y = n, group = sentiment, color = sentiment)) +
+  geom_line() +
   facet_wrap(~Coin)
 ```
 ```{r}

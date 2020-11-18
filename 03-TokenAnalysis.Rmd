@@ -133,7 +133,6 @@ ggplot(monthCount, aes(
 )) +
   geom_text_wordcloud_area(rm_outside = TRUE) +
   scale_size_area(max_size = 10) +
-  #scale_colour_gradient2(low = "black", mid = "red4", high = "red", space = "Lab", aesthetics = "color") +
   theme_minimal() +
   facet_grid(vars(month), vars(year))
 
