@@ -155,7 +155,7 @@ ETH <- c("Ethereum", "ethereum", "ETH", "eth", "Eth")
 XRP <- c("Ripple", "ripple", "XRP", "xrp", "Xrp")
 LTC <- c("Litecoin", "litecoin", "LTC", "ltc", "Ltc")
 
-currencies <- c(BTC, ETH, XRP, LTC, LINK)
+currencies <- c(BTC, ETH, XRP, LTC)
 
 # For frequency analysis
 CurTkns <- TknsByDate %>%
@@ -174,8 +174,7 @@ CurTkns <- CurTkns %>%
     .$word %in% BTC ~ "BTC",
     .$word %in% ETH ~ "ETH",
     .$word %in% XRP ~ "XRP",
-    .$word %in% LTC ~ "LTC",
-    .$word %in% LINK ~ "LINK"
+    .$word %in% LTC ~ "LTC"
   ))
 ```
 
