@@ -32,13 +32,14 @@ nrc<- get_sentiments("nrc")
 sntmntByMonth <- currTkns %>%
   inner_join(nrc) %>%
   group_by(Coin, Month) %>%
-  count(sentiment)
+  count(sentiment) %>%
+  ungroup()
 ```
 
 ```{r}
 ggplot(sntmntByMonth, aes(x = Month, y = n, color = sentiment)) +
   geom_line() +
-  facet_wrap(~Coin, scale = "free_y")
+  facet_wrap(~Coin)
 ```
 ```{r}
 pBTC <- Quandl('BITFINEX/BTCUSD')
