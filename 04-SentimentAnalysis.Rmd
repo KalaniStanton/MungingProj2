@@ -29,16 +29,18 @@ nrc<- get_sentiments("nrc")
 `r kbl(head(nrc))`
 
 ```{r}
-sntmntByMonth <- currTkns %>%
-  inner_join(nrc) %>%
+currSntmntTkns <- currTkns %>%
+  inner_join(nrc)
+
+sntmntByMonth <-  currSntmntTkns %>%
   group_by(Coin, Month) %>%
   count(sentiment) %>%
   ungroup()
 ```
 
 ```{r}
-ggplot(sntmntByMonth, aes(x = Month, y = n, color = sentiment)) +
-  geom_line() +
+ggplot(sntmntByMonth, aes(x = Month, y = n)) +
+  geom_line(stat = "identity") +
   facet_wrap(~Coin)
 ```
 ```{r}
