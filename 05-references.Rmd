@@ -2,12 +2,6 @@
 # References {-}
 
 '`
-```{r, messages = FALSE, warning=FALSE}
-#install.packages("devtools")
-#devtools::install_github("neuropsychology/report")
-library(report) #Package for citing
-```
-
 ## Packages Used
 
 ```{r include=TRUE}

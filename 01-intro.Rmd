@@ -31,5 +31,7 @@ library(hrbrthemes)
 library(scales)
 library(lubridate)
 library(plotly)
+
+knitr::opts_chunk$set(echo = TRUE)
 ```
 
