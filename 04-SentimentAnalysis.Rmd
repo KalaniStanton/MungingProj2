@@ -59,3 +59,385 @@ pXRP["Coin"] <- "XRP"
 PricesByCoin <- rbind(pBTC, pETH, pLTC, pXRP)
 ```
 
+## Coin Price/ Sentiment vs Time {.tabset}
+
+```{r echo=FALSE}
+
+# function for getting Coin Price/ Sentiment vs Time graph by coin 
+
+get_graph <- function(coin, coeff) {   # coin = "COIN_NAME", coeff = Value used to transform sentiment to match price scale on graph
+  
+  # get related coin data
+  coinprice_data <- PricesByCoin %>% filter(Coin == coin)
+  coin_sntmntByMonth <- sntmntByMonth %>% filter(Coin == coin)
+  
+  # reshape coin price by day data to merge high, low, last, med into one variable
+  price_by_mkt_metric <- melt(coinprice_data, id = c("Date", "Coin"))
+  colnames(price_by_mkt_metric)[3] <- "Mkt_Metrics"
+  
+  # normalize x-values for both datasets (date)
+  price_by_mkt_metric$Date <- as_date(price_by_mkt_metric$Date)
+  coin_sntmntByMonth$Month <- as_date(coin_sntmntByMonth$Month)
+  
+
+  # make the gg plot
+  Coin_Daily_Price.plot <- price_by_mkt_metric %>%
+    filter((Mkt_Metrics %in% c("High", "Low", "Last"))) %>%
+    
+    # ggplot setup
+    ggplot(aes(x = Date)) +
+    theme_minimal() +
+    ggtitle("BTC Sentiment/ Price vs Time") +
+    xlab("Date") +
+    theme(legend.title = element_blank())  +
+    
+    
+    # plot price vs time lines
+    geom_line(
+      stat = 'identity',
+      aes(
+        y = value,
+        linetype = Mkt_Metrics,
+        color = Mkt_Metrics,
+        size = Mkt_Metrics,
+        alpha = Mkt_Metrics)) +
+    scale_linetype_manual("Market Metrics", values = c("solid", "solid", "solid")) +
+    scale_color_manual("Market Metrics", values = c('#EF9A9A', '#C5E1A5', '#212121')) +
+    scale_size_manual("Market Metrics", values = c(1, 1, 0.3)) +
+    scale_alpha_manual("Market Metrics", values = c(0.8, 0.8, 1)) +
+    
+    
+    # plot sentiment bars (stacked)
+    geom_bar(
+      data = coin_sntmntByMonth,
+      stat = 'identity',
+      aes(
+        x = Month,
+        y = n / coeff,
+        fill = sentiment)) +
+    
+    
+    # setup y-axises
+    scale_y_continuous(name = "Price (USD)",
+                       sec.axis = sec_axis( ~ . * coeff,  name = "Sentiment (n)"))
+  
+  # convert to plotly
+  Coin_Daily_Price.plotly = ggplotly(Coin_Daily_Price.plot, tooltip = c("label","x","y"))
+  
+  # cleans up ledgend labels
+  for (i in 1:length(Coin_Daily_Price.plotly$x$data)) {
+    if (!is.null(Coin_Daily_Price.plotly$x$data[[i]]$name)) {
+      Coin_Daily_Price.plotly$x$data[[i]]$name =  gsub("\\(", "",
+          str_split(Coin_Daily_Price.plotly$x$data[[i]]$name, ",")[[1]][1])
+    }
+  }
+  
+  Coin_Daily_Price.plot
+  Coin_Daily_Price.plotly # FOR THE LIFE OF ME CANNOT FIGURE OUT HOW TO GET THE 2ND AXIS TO SHOW
+}
+```
+
+
+### BTC Price & Sentiment over Time
+
+```{r}
+get_graph("BTC", 4)
+```
+
+### ETH Price & Sentiment over Time
+
+```{r}
+get_graph("ETH",20)
+```
+
+### LTC Price & Sentiment over Time
+
+```{r}
+get_graph("LTC", 19)
+```
+
+### XRP Price & Sentiment over Time
+
+```{r}
+get_graph("XRP", 8000)
+```
+
+
+## Who is posting the most? we should go stalk their reddit profile. {.tabset}
+
+### General
+
+### Angriest
+Top ten angriest users
+```{r}
+users.angry <- currSntmntTkns %>% 
+  filter(sentiment == "anger") %>%
+  count(user) %>% 
+  arrange(desc(n) )
+
+users.angry
+
+users_coin.angry <- currSntmntTkns %>% 
+    filter(sentiment == "anger") %>%
+    group_by(Coin) %>% 
+    count(user) 
+  
+users_coin.angry[[2]] <- NULL
+
+ 
+# ggplot setup
+ggplot(users_coin.angry, aes(x = Coin)) +
+    geom_bar(aes(y = n), stat='identity', color = "lightblue") +
+    ggtitle("Anger by coin") +
+    xlab("Coin") + ylab("Anger tokens (n)") 
+  
+#users_coin.angry.plot
+
+# idk y there are weird bars :(
+
+```
+
+### Happiest
+Top ten most joyful/ positive users
+
+### Saddest
+Top ten saddest/ most negative users
+
+
+```{r}
+head(currSntmntTkns)
+```
+
+
+## Sentiment Distribution By Coin
+
+```{r}
+#ggplot(sntmntByMonth, aes(x = Month, y = n, color = sentiment)) +
+  #geom_line() +
+  #facet_wrap(~Coin, scale = "free_y")
+
+ggplot(sntmntByMonth, aes(x = Month, y = n, group = sentiment, color = sentiment)) +
+  geom_line() +
+  facet_wrap(~Coin)
+```
+
+
+## Descriptive Statistics
+
+```{r}
+
+ggplot(sntmntByMonth, aes(x = Coin, fill = Coin)) + geom_bar() +  ggtitle("Distribution of Coin Types")
+
+ggplot(sntmntByMonth, aes(x = sentiment, fill = sentiment)) + geom_bar() +  ggtitle("Distribution Sentiments Among All Coins")
+
+
+ggplot(sntmntByMonth, aes(x = Month, fill = Month)) + geom_bar() +  ggtitle("Number of Sentiment Types for Each Month")
+
+ggplot(sntmntByMonth, aes(x = sentiment, y = n, color = Coin)) + geom_point() +  ggtitle("Popularity of Each Sentiment Among Coin Type")
+
+
+
+
+
+```
+
+
+
+## Most Abundant Sentiment Over Time
+
+```{r}
+aggSent <- function(pop.df, n, m, coindf, unevenStep = FALSE){
+  k = 1
+  j = 1
+  for (i in 1:n){
+    if(coindf[i,2] == m[j]){
+      if(coindf[i,4] > pop.df[j,3]){
+        pop.df[j,3] = coindf[i,4]
+        pop.df[j,2] = coindf[i,3]
+        pop.df[j,4] = pop.df[j,4] + coindf[i,4]
+        pop.df[j,5] = pop.df[j,3] / pop.df[j,4]
+      }
+    }
+
+    k = k + 1
+    
+    
+    
+    
+    if(k == 11){
+      j = j + 1
+      k = 1
+    }
+  }
+  return(pop.df)
+}
+
+df <- sntmntByMonth
+
+df <- na.omit(df)
+
+# create a new dataframe for each coin
+
+btc <- df[which(df$Coin == "BTC"),]
+
+
+btc_m <- unique(btc$Month)
+
+btc_n <- nrow(btc)
+
+n <- length(btc_m)
+sentiment <- rep("x", n)
+
+
+btc.pop.df <- data.frame(btc_m, sentiment,0, 0, 0)
+
+btc.pop.df <- aggSent(btc.pop.df, btc_n, btc_m, btc)
+
+# ETH
+
+eth <- df[which(df$Coin == "ETH"),]
+eth_m <-  unique(eth$Month)
+
+eth_n <- nrow(eth)
+
+n <- length(eth_m)
+sentiment <- rep("x", n)
+
+eth.pop.df <- data.frame(eth_m, sentiment,0, 0, 0)
+
+
+#eth.pop.df <- aggSent(eth.pop.df, eth_n, eth_m, eth, unevenStep = TRUE)
+
+
+#eth.pop.df
+
+j <- 1
+
+for(i in 1:eth_n){
+  if(i > 1){
+    prevM <- eth[i-1, 2]
+    month <- eth[i,2]
+  
+    if(month != prevM){
+      j <- j + 1
+    }
+    
+  }
+  
+  if(eth[i,2] == eth_m[j]){
+      if(eth[i,4] > eth.pop.df[j,3]){
+        eth.pop.df[j,3] = eth[i,4]
+        eth.pop.df[j,2] = eth[i,3]
+        eth.pop.df[j,4] = eth.pop.df[j,4] + eth[i,4]
+        eth.pop.df[j,5] = eth.pop.df[j,3] / eth.pop.df[j,4]
+      }
+    
+  }
+  
+}
+
+
+
+#xrp <- df[which(df$Coin == "XRP"),]
+
+eth.pop.df
+
+
+
+ltc <- df[which(df$Coin == "LTC"),]
+
+ltc_m <-  unique(ltc$Month)
+
+ltc_n <- nrow(ltc)
+
+n <- length(ltc_m)
+sentiment <- rep("x", n)
+
+ltc.pop.df <- data.frame(ltc_m, sentiment,0, 0, 0)
+
+j <- 1
+
+for(i in 1:ltc_n){
+  if(i > 1){
+    prevM <- ltc[i-1, 2]
+    month <- ltc[i,2]
+  
+    if(month != prevM){
+      j <- j + 1
+    }
+    
+  }
+  
+  if(ltc[i,2] == ltc_m[j]){
+      if(ltc[i,4] > ltc.pop.df[j,3]){
+        ltc.pop.df[j,3] = ltc[i,4]
+        ltc.pop.df[j,2] = ltc[i,3]
+        ltc.pop.df[j,4] = ltc.pop.df[j,4] + ltc[i,4]
+        ltc.pop.df[j,5] = ltc.pop.df[j,3] / ltc.pop.df[j,4]
+      }
+    
+  }
+  
+  
+}
+ltc.pop.df
+
+xrp <- df[which(df$Coin == "XRP"),]
+
+xrp_m <-  unique(xrp$Month)
+
+xrp_n <- nrow(xrp)
+
+n <- length(xrp_m)
+sentiment <- rep("x", n)
+
+xrp.pop.df <- data.frame(xrp_m, sentiment,0, 0, 0)
+
+j <- 1
+
+
+for(i in 1:xrp_n){
+  if(i > 1){
+    prevM <- xrp[i-1, 2]
+    month <- xrp[i,2]
+  
+    if(month != prevM){
+      j <- j + 1
+    }
+  }
+  if(xrp[i,2] == xrp_m[j]){
+      if(xrp[i,4] > xrp.pop.df[j,3]){
+        xrp.pop.df[j,3] = xrp[i,4]
+        xrp.pop.df[j,2] = xrp[i,3]
+        xrp.pop.df[j,4] = xrp.pop.df[j,4] + xrp[i,4]
+        xrp.pop.df[j,5] = xrp.pop.df[j,3] / xrp.pop.df[j,4]
+      }
+  }
+}
+xrp.pop.df
+```
+
+## Plots of Top Sentiment Over Time
+
+```{r}
+ggplot(data = btc.pop.df, aes(x=btc_m, y = X0.2, group = 1, color = sentiment))+
+  geom_line()+
+  geom_point() + 
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) + ggtitle("Most Common Sentiment Over Time For BTC")
+
+ggplot(data = eth.pop.df, aes(x=eth_m, y = X0.2, group = 1, color = sentiment))+
+  geom_line()+
+  geom_point() + 
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) + ggtitle("Most Common Sentiment Over Time For ETH")
+
+ggplot(data = ltc.pop.df, aes(x=ltc_m, y = X0.2, group = 1, color = sentiment))+
+  geom_line()+
+  geom_point() + 
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) + ggtitle("Most Common Sentiment Over Time For LTC")
+
+
+ggplot(data = xrp.pop.df, aes(x=xrp_m, y = X0.2, group = 1, color = sentiment))+
+  geom_line()+
+  geom_point() + 
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) + ggtitle("Most Common Sentiment Over Time For XRP")
+```
