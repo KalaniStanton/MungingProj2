@@ -4,27 +4,27 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 1 Introduction | An analysis of Cryptocurrency</title>
-  <meta name="description" content="Chapter 1 Introduction | An analysis of Cryptocurrency" />
+  <title>Section 1 Introduction | An analysis of Cryptocurrency</title>
+  <meta name="description" content="Section 1 Introduction | An analysis of Cryptocurrency" />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 1 Introduction | An analysis of Cryptocurrency" />
+  <meta property="og:title" content="Section 1 Introduction | An analysis of Cryptocurrency" />
   <meta property="og:type" content="book" />
   
   
   
-  <meta name="github-repo" content="KalaniStanton/RedditCryptoEDA" />
+  <meta name="github-repo" content="KalaniStanton/MungingProj2" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 1 Introduction | An analysis of Cryptocurrency" />
+  <meta name="twitter:title" content="Section 1 Introduction | An analysis of Cryptocurrency" />
   
   
   
 
-<meta name="author" content="Timothy McCormack, Carolyn Herrera, Wei Chun Tien," />
+<meta name="author" content="Kalani Stanton, Timothy McCormack, Carolyn Herrera, Wei Chun Tien," />
 
 
-<meta name="date" content="2020-11-09" />
+<meta name="date" content="2020-11-18" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +32,7 @@
   
   
 <link rel="prev" href="index.html"/>
-<link rel="next" href="data-import-and-clean.html"/>
+<link rel="next" href="clean.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -55,6 +55,13 @@
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 <link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
 <script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.9.2.1/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.52.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.52.2/plotly-latest.min.js"></script>
 
 
 <style type="text/css">
@@ -140,22 +147,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="divider"></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
 <li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
-<li class="chapter" data-level="2" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html"><i class="fa fa-check"></i><b>2</b> Data Import and Clean</a><ul>
-<li class="chapter" data-level="2.1" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#import-data"><i class="fa fa-check"></i><b>2.1</b> Import Data</a><ul>
-<li class="chapter" data-level="2.1.1" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#fix-names"><i class="fa fa-check"></i><b>2.1.1</b> Fix Names</a></li>
+<li class="chapter" data-level="2" data-path="clean.html"><a href="clean.html"><i class="fa fa-check"></i><b>2</b> Cleaning and Tokenization</a><ul>
+<li class="chapter" data-level="2.1" data-path="clean.html"><a href="clean.html#import-clean"><i class="fa fa-check"></i><b>2.1</b> Import Clean</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="clean.html"><a href="clean.html#fix-names"><i class="fa fa-check"></i><b>2.1.1</b> Fix Names</a></li>
+<li class="chapter" data-level="2.1.2" data-path="clean.html"><a href="clean.html#subreddit-information"><i class="fa fa-check"></i><b>2.1.2</b> Subreddit information</a></li>
 </ul></li>
-<li class="chapter" data-level="2.2" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#data-collection"><i class="fa fa-check"></i><b>2.2</b> Data Collection</a></li>
-<li class="chapter" data-level="2.3" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#clean"><i class="fa fa-check"></i><b>2.3</b> Clean</a><ul>
-<li class="chapter" data-level="2.3.1" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#submissions"><i class="fa fa-check"></i><b>2.3.1</b> Submissions</a></li>
-<li class="chapter" data-level="2.3.2" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#count"><i class="fa fa-check"></i><b>2.3.2</b> Count</a></li>
+<li class="chapter" data-level="2.2" data-path="clean.html"><a href="clean.html#submissions"><i class="fa fa-check"></i><b>2.2</b> Submissions</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="clean.html"><a href="clean.html#clean-1"><i class="fa fa-check"></i><b>2.2.1</b> Clean</a></li>
 </ul></li>
-<li class="chapter" data-level="2.4" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#comments"><i class="fa fa-check"></i><b>2.4</b> Comments</a><ul>
-<li class="chapter" data-level="2.4.1" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#clean-1"><i class="fa fa-check"></i><b>2.4.1</b> Clean</a></li>
-<li class="chapter" data-level="2.4.2" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#tokenize"><i class="fa fa-check"></i><b>2.4.2</b> Tokenize</a></li>
-<li class="chapter" data-level="2.4.3" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#count-1"><i class="fa fa-check"></i><b>2.4.3</b> Count</a></li>
+<li class="chapter" data-level="2.3" data-path="clean.html"><a href="clean.html#comments"><i class="fa fa-check"></i><b>2.3</b> Comments</a><ul>
+<li class="chapter" data-level="2.3.1" data-path="clean.html"><a href="clean.html#clean-2"><i class="fa fa-check"></i><b>2.3.1</b> Clean</a></li>
 </ul></li>
-<li class="chapter" data-level="2.5" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#export"><i class="fa fa-check"></i><b>2.5</b> Export</a></li>
-<li class="chapter" data-level="2.6" data-path="data-import-and-clean.html"><a href="data-import-and-clean.html#works-cited"><i class="fa fa-check"></i><b>2.6</b> Works Cited</a></li>
+<li class="chapter" data-level="2.4" data-path="clean.html"><a href="clean.html#export"><i class="fa fa-check"></i><b>2.4</b> Export</a></li>
+<li class="chapter" data-level="2.5" data-path="clean.html"><a href="clean.html#works-cited"><i class="fa fa-check"></i><b>2.5</b> Works Cited</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="token-analysis.html"><a href="token-analysis.html"><i class="fa fa-check"></i><b>3</b> Token Analysis</a><ul>
 <li class="chapter" data-level="3.1" data-path="token-analysis.html"><a href="token-analysis.html#import"><i class="fa fa-check"></i><b>3.1</b> Import</a></li>
@@ -170,6 +174,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.6" data-path="token-analysis.html"><a href="token-analysis.html#currencies"><i class="fa fa-check"></i><b>3.6</b> Currencies</a><ul>
 <li class="chapter" data-level="3.6.1" data-path="token-analysis.html"><a href="token-analysis.html#assigning-identifiers"><i class="fa fa-check"></i><b>3.6.1</b> Assigning Identifiers</a></li>
 </ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="sentiments.html"><a href="sentiments.html"><i class="fa fa-check"></i><b>4</b> Sentiment Analysis</a><ul>
+<li class="chapter" data-level="4.1" data-path="sentiments.html"><a href="sentiments.html#data-shaping"><i class="fa fa-check"></i><b>4.1</b> Data Shaping</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="sentiments.html"><a href="sentiments.html#get_sentiments"><i class="fa fa-check"></i><b>4.1.1</b> <code>get_sentiments()</code></a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="sentiments.html"><a href="sentiments.html#coin-price-sentiment-vs-time"><i class="fa fa-check"></i><b>4.2</b> Coin Price/ Sentiment vs Time</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="sentiments.html"><a href="sentiments.html#btc-price-sentiment-over-time"><i class="fa fa-check"></i><b>4.2.1</b> BTC Price &amp; Sentiment over Time</a></li>
+<li class="chapter" data-level="4.2.2" data-path="sentiments.html"><a href="sentiments.html#eth-price-sentiment-over-time"><i class="fa fa-check"></i><b>4.2.2</b> ETH Price &amp; Sentiment over Time</a></li>
+<li class="chapter" data-level="4.2.3" data-path="sentiments.html"><a href="sentiments.html#ltc-price-sentiment-over-time"><i class="fa fa-check"></i><b>4.2.3</b> LTC Price &amp; Sentiment over Time</a></li>
+<li class="chapter" data-level="4.2.4" data-path="sentiments.html"><a href="sentiments.html#xrp-price-sentiment-over-time"><i class="fa fa-check"></i><b>4.2.4</b> XRP Price &amp; Sentiment over Time</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="sentiments.html"><a href="sentiments.html#who-is-posting-the-most-we-should-go-stalk-their-reddit-profile."><i class="fa fa-check"></i><b>4.3</b> Who is posting the most? we should go stalk their reddit profile.</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="sentiments.html"><a href="sentiments.html#general"><i class="fa fa-check"></i><b>4.3.1</b> General</a></li>
+<li class="chapter" data-level="4.3.2" data-path="sentiments.html"><a href="sentiments.html#angriest"><i class="fa fa-check"></i><b>4.3.2</b> Angriest</a></li>
+<li class="chapter" data-level="4.3.3" data-path="sentiments.html"><a href="sentiments.html#happiest"><i class="fa fa-check"></i><b>4.3.3</b> Happiest</a></li>
+<li class="chapter" data-level="4.3.4" data-path="sentiments.html"><a href="sentiments.html#saddest"><i class="fa fa-check"></i><b>4.3.4</b> Saddest</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="sentiments.html"><a href="sentiments.html#sentiment-distribution-by-coin"><i class="fa fa-check"></i><b>4.4</b> Sentiment Distribution By Coin</a></li>
+<li class="chapter" data-level="4.5" data-path="sentiments.html"><a href="sentiments.html#descriptive-statistics"><i class="fa fa-check"></i><b>4.5</b> Descriptive Statistics</a></li>
+<li class="chapter" data-level="4.6" data-path="sentiments.html"><a href="sentiments.html#most-abundant-sentiment-over-time"><i class="fa fa-check"></i><b>4.6</b> Most Abundant Sentiment Over Time</a></li>
+<li class="chapter" data-level="4.7" data-path="sentiments.html"><a href="sentiments.html#plots-of-top-sentiment-over-time"><i class="fa fa-check"></i><b>4.7</b> Plots of Top Sentiment Over Time</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a><ul>
+<li class="chapter" data-level="4.8" data-path="references.html"><a href="references.html#packages-used"><i class="fa fa-check"></i><b>4.8</b> Packages Used</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -192,7 +220,38 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
             <section class="normal" id="section-">
 <div id="intro" class="section level1">
-<h1><span class="header-section-number">Chapter 1</span> Introduction</h1>
+<h1><span class="header-section-number">Section 1</span> Introduction</h1>
+<p>This project is an exploration of the relationship between sentiment and the evaluations. Reddit, a social-engagement platform designed as a democratic forum of ideas, wherein each user can submit content of their own and evaluate that of other users. These forums are located within subreddits; subsections of the website dissociated according some symbolic purpose. <em>Crypto-currencies</em> are an interesting area to study within this context because the block-chain technologies, upon which these “digital assets” are built, are democratic by there very nature. To speak precisely, the value of a crypto-currency “coin” is ultimately determined by the interdependent evaluations of its holders. In it’s first transaction, <a href="https://www.coindesk.com/price/bitcoin">BTC</a> was once worth a pizza; today, it’s worth a used car. Until very recently, these crypto currencies were widely dismissed by financial institutions, but as time goes on <a href="https://fortune.com/2020/07/22/bitcoin-big-banks-can-hold-occ-letter/">more governments, banks, and brokers</a> are finding value in this “intangible” asset.</p>
+<p>Despite the hesitancy of major financial institutions in the early years of the technology, Bitcoin and other block-chain based currencies, often referred to as <em>Alt-Coins</em>, achieved confounding success in the later half of the 2010s. Since then it has fallen significantly, but today the price of Bitcoin is rapidly increasing and is on the verge of breaking it’s previous record set in 2017. Regarding all of this, it is once again an appropriate time to ask: Why?</p>
+<p>This project does not seek to answer this question, nor will it make make any empirical claims about the reliability or feasibility of using social media data to predict the value of currencies. Instead, this project is an exploratory analysis of data to assess the viability of using sentiment to predict the value of block-chain based currencies.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="intro.html#cb1-1"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="intro.html#cb1-2"></a><span class="kw">library</span>(tidytext)</span>
+<span id="cb1-3"><a href="intro.html#cb1-3"></a><span class="kw">library</span>(textclean)</span>
+<span id="cb1-4"><a href="intro.html#cb1-4"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb1-5"><a href="intro.html#cb1-5"></a><span class="kw">library</span>(stringr)</span>
+<span id="cb1-6"><a href="intro.html#cb1-6"></a><span class="kw">library</span>(knitr)</span>
+<span id="cb1-7"><a href="intro.html#cb1-7"></a><span class="kw">library</span>(wordcloud)</span>
+<span id="cb1-8"><a href="intro.html#cb1-8"></a><span class="kw">library</span>(kableExtra)</span>
+<span id="cb1-9"><a href="intro.html#cb1-9"></a><span class="kw">library</span>(DT)</span>
+<span id="cb1-10"><a href="intro.html#cb1-10"></a><span class="kw">library</span>(tidygraph)</span>
+<span id="cb1-11"><a href="intro.html#cb1-11"></a><span class="kw">library</span>(ggraph)</span>
+<span id="cb1-12"><a href="intro.html#cb1-12"></a><span class="kw">library</span>(tm)</span>
+<span id="cb1-13"><a href="intro.html#cb1-13"></a><span class="kw">library</span>(ggwordcloud)</span>
+<span id="cb1-14"><a href="intro.html#cb1-14"></a><span class="kw">library</span>(Hmisc)</span>
+<span id="cb1-15"><a href="intro.html#cb1-15"></a><span class="kw">library</span>(lubridate)</span>
+<span id="cb1-16"><a href="intro.html#cb1-16"></a><span class="kw">library</span>(wordcloud)</span>
+<span id="cb1-17"><a href="intro.html#cb1-17"></a><span class="kw">library</span>(viridis)</span>
+<span id="cb1-18"><a href="intro.html#cb1-18"></a><span class="kw">library</span>(colorspace)</span>
+<span id="cb1-19"><a href="intro.html#cb1-19"></a><span class="kw">library</span>(Quandl)</span></code></pre></div>
+<pre><code>## Warning: package &#39;Quandl&#39; was built under R version 4.0.3</code></pre>
+<pre><code>## Warning: package &#39;xts&#39; was built under R version 4.0.3</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="intro.html#cb4-1"></a><span class="kw">library</span>(reshape)</span></code></pre></div>
+<pre><code>## Warning: package &#39;reshape&#39; was built under R version 4.0.3</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="intro.html#cb6-1"></a><span class="kw">library</span>(hrbrthemes)</span></code></pre></div>
+<pre><code>## Warning: package &#39;hrbrthemes&#39; was built under R version 4.0.3</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="intro.html#cb8-1"></a><span class="kw">library</span>(scales)</span>
+<span id="cb8-2"><a href="intro.html#cb8-2"></a><span class="kw">library</span>(lubridate)</span>
+<span id="cb8-3"><a href="intro.html#cb8-3"></a><span class="kw">library</span>(plotly)</span></code></pre></div>
 
 </div>
             </section>
@@ -201,7 +260,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         </div>
       </div>
 <a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="data-import-and-clean.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="clean.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

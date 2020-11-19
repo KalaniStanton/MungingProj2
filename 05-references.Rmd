@@ -10,14 +10,8 @@ library(report) #Package for citing
 
 ## Packages Used
 
-<<<<<<< Updated upstream
-```{r include=FALSE}
+```{r include=TRUE}
 # automatically create a bib database for R packages
 knitr::write_bib(c(
   .packages(), 'bookdown', 'knitr', 'rmarkdown','packages.bib', "book.bib"))
 ```
-=======
-```{r}
-kable(cite_packages(sessionInfo())) %>% kable_styling(full_width = F)
-```
->>>>>>> Stashed changes
