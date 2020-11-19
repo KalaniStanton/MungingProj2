@@ -88,7 +88,7 @@ get_graph <- function(coin, coeff) {   # coin = "COIN_NAME", coeff = Value used 
     # ggplot setup
     ggplot(aes(x = Date)) +
     theme_minimal() +
-    ggtitle("BTC Sentiment/ Price vs Time") +
+    ggtitle(paste(coin, "Sentiment/ Price vs Time")) +
     xlab("Date") +
     theme(legend.title = element_blank())  +
     
@@ -103,7 +103,7 @@ get_graph <- function(coin, coeff) {   # coin = "COIN_NAME", coeff = Value used 
         size = Mkt_Metrics,
         alpha = Mkt_Metrics)) +
     scale_linetype_manual("Market Metrics", values = c("solid", "solid", "solid")) +
-    scale_color_manual("Market Metrics", values = c('#EF9A9A', '#C5E1A5', '#212121')) +
+    scale_color_manual("Market Metrics", values = c('#C5E1A5', '#EF9A9A', '#212121')) +
     scale_size_manual("Market Metrics", values = c(1, 1, 0.3)) +
     scale_alpha_manual("Market Metrics", values = c(0.8, 0.8, 1)) +
     

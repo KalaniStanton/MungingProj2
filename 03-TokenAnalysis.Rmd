@@ -49,9 +49,8 @@ kable(sr_all_n25)
 
 ## Wordclouds
 
-Wordclouds are then constructed using the top 50 words from each subreddit page.
+Wordcloud is constructed using the top 100 words.
 
-### All words (Submissions and Comments)
 ```{r wc_allCount}
 #sr_allCount <- allCount %>% filter(!subreddit == "r/all [control]")
 sr_allWC <- allCount %>%
@@ -71,7 +70,7 @@ ggsave("CC_wordcloud.pdf", device = "pdf", path = "CCViz", height = 10, width = 
 ```
 
 
-## Posts over time
+### Wordclouds over time
 
 ```{r split_dates}
 TknsByDate <- TknsC %>%
