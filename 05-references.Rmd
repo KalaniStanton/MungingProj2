@@ -1,0 +1,17 @@
+`r if (knitr:::is_html_output()) '
+# References {-}
+
+'`
+```{r, messages = FALSE, warning=FALSE}
+#install.packages("devtools")
+#devtools::install_github("neuropsychology/report")
+library(report) #Package for citing
+```
+
+## Packages Used
+
+```{r include=FALSE}
+# automatically create a bib database for R packages
+knitr::write_bib(c(
+  .packages(), 'bookdown', 'knitr', 'rmarkdown','packages.bib', "book.bib"))
+```
