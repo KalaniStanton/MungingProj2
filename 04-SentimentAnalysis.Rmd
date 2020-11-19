@@ -45,24 +45,33 @@ ggplotly(sBmPlot)
 ```
 
 ```{r}
-pBTC <- Quandl('BITFINEX/BTCUSD')
-pETH <- Quandl('BITFINEX/ETHUSD')
-pLTC <- Quandl('BITFINEX/LTCUSD')
-pXRP <- Quandl('BITFINEX/XRPUSD')
+# Quandl limits free users to 50 calls a day, so these code chunks can be run for more recent data
+
+#pBTC <- Quandl('BITFINEX/BTCUSD')
+#pETH <- Quandl('BITFINEX/ETHUSD')
+#pLTC <- Quandl('BITFINEX/LTCUSD')
+#pXRP <- Quandl('BITFINEX/XRPUSD')
+
+#pBTC["Coin"] <- "BTC"
+#pETH["Coin"] <- "ETH"
+#pLTC["Coin"] <- "LTC"
+#pXRP["Coin"] <- "XRP"
+
+#PricesByCoin <- rbind(pBTC, pETH, pLTC, pXRP)
+
+#To get around this call limit, we use a csv to hold the data
+PricesByCoin<- read.csv(paste0(dataDir, "/pricesByCoin.csv"))
 ```
 
 ```{r}
-pBTC["Coin"] <- "BTC"
-pETH["Coin"] <- "ETH"
-pLTC["Coin"] <- "LTC"
-pXRP["Coin"] <- "XRP"
 
-PricesByCoin <- rbind(pBTC, pETH, pLTC, pXRP)
+
+#write.csv(PricesByCoin,paste0(dataDir,"/pricesByCoin.csv"))
 ```
 
-## Price & Sentiment over Time
+## Price & Sentiment over Time {.tabset}
 
-```{r echo=FALSE}
+```{r}
 
 # function for getting Coin Price/ Sentiment vs Time graph by coin 
 
@@ -88,7 +97,7 @@ get_graph <- function(coin, coeff) {   # coin = "COIN_NAME", coeff = Value used 
     # ggplot setup
     ggplot(aes(x = Date)) +
     theme_minimal() +
-    ggtitle(paste(coin, "Sentiment/ Price vs Time")) +
+    ggtitle(paste(coin, " Sentiment/ Price vs Time")) +
     xlab("Date") +
     theme(legend.title = element_blank())  +
     
@@ -103,7 +112,7 @@ get_graph <- function(coin, coeff) {   # coin = "COIN_NAME", coeff = Value used 
         size = Mkt_Metrics,
         alpha = Mkt_Metrics)) +
     scale_linetype_manual("Market Metrics", values = c("solid", "solid", "solid")) +
-    scale_color_manual("Market Metrics", values = c('#C5E1A5', '#EF9A9A', '#212121')) +
+    scale_color_manual("Market Metrics", values = c('#EF9A9A', '#C5E1A5', '#212121')) +
     scale_size_manual("Market Metrics", values = c(1, 1, 0.3)) +
     scale_alpha_manual("Market Metrics", values = c(0.8, 0.8, 1)) +
     
@@ -163,49 +172,91 @@ get_graph("LTC", 19)
 get_graph("XRP", 8000)
 ```
 
-## User Sentiment
+## User Sentiment {.tabset}
+
+```{r}
+posts_by_coin <- currSntmntTkns %>% 
+    group_by(Coin) %>%
+    count(Coin)
+
+users_by_coin <- currSntmntTkns %>% 
+    group_by(user) %>%
+    count(user)
+```
+
+```{r}
+emo_stats <- function(emote, color1, color2){
+  
+  users.emo <- currSntmntTkns %>% 
+    filter(sentiment == emote) %>%
+    count(user) 
+  users.emo <- inner_join(users.emo, users_by_coin, by = "user", suffix = c(".emote", ".total")) %>%
+    filter(n.total >= 500) %>%
+    mutate(n.emote_porp = n.emote/n.total) %>% 
+    arrange(desc(n.emote_porp) )
+  
+  coin.emo <- currSntmntTkns %>% 
+      filter(sentiment == emote) %>%
+      group_by(Coin) %>% 
+      count(Coin) 
+  coin.emo <- inner_join(coin.emo, posts_by_coin, by = "Coin", suffix = c(".emote", ".total")) %>%
+    mutate(n.emote_porp=n.emote/n.total)
+  
+  #users_coin.emo TOTAL plot
+  plt1 <- ggplotly(
+    ggplot(coin.emo, aes(x = Coin)) +
+      theme_minimal() +
+      theme(panel.grid.major.x = element_blank()) +
+      geom_bar(aes(y = n.emote), stat='identity', fill = color1, width = 0.5) +
+      ggtitle("Total emote by coin") +
+      xlab("Coin") + ylab("Emote tokens (posts.emote)") 
+  )
+  
+  # users_coin.emo PROP plot
+  plt2 <- ggplotly(
+    ggplot(coin.emo, aes(x = Coin)) +
+      theme_minimal() +
+      theme(panel.grid.major.x = element_blank()) +
+      geom_bar(aes(y = n.emote_porp), stat='identity', fill = color2, width = 0.5) +
+      ggtitle("Proportion of emote by coin") +
+      xlab("Coin") + ylab("Emote tokens (posts.emote/ posts.total)") 
+  )
+  
+  return(list(as_tibble(users.emo), plt1, plt2))
+}
+```
+
+
 
 ### Angriest
-Top ten angriest users
+Angriest users
 ```{r}
-users.angry <- currSntmntTkns %>% 
-  filter(sentiment == "anger") %>%
-  count(user) %>% 
-  arrange(desc(n) )
-
-users.angry
-
-users_coin.angry <- currSntmntTkns %>% 
-    filter(sentiment == "anger") %>%
-    group_by(Coin) %>% 
-    count(user) 
-  
-users_coin.angry[[2]] <- NULL
-
- 
-# ggplot setup
-ggplot(users_coin.angry, aes(x = Coin)) +
-    geom_bar(aes(y = n), stat='identity', color = "lightblue") +
-    ggtitle("Anger by coin") +
-    xlab("Coin") + ylab("Anger tokens (n)") 
-  
-#users_coin.angry.plot
-
-# idk y there are weird bars :(
-
+ang <- emo_stats("anger", "#F1948A", "#E6B0AA")
+head(ang[[1]])
+ang[[2]]
+ang[[3]]
 ```
 
 ### Happiest
-Top ten most joyful/ positive users
+Top most joyful/ positive users
+```{r}
+hap <- emo_stats(c("joy", "positive"), "#F7DC6F", "#FCF3CF")
+head(hap[[1]])
+hap[[2]]
+hap[[3]]
+```
+
 
 ### Saddest
-Top ten saddest/ most negative users
+Top saddest/ most negative users
 
 
 ```{r}
-head(currSntmntTkns)
+sad <- emo_stats(c("negative", "sad"), "#5499C7", "#D4E6F1")
+head(sad[[1]])
+sad[[2]]
+sad[[3]]
 ```
-
 
 ## Descriptive Statistics
 

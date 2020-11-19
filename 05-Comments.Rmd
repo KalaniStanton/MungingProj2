@@ -1,7 +1,0 @@
-# Concluding Remarks {#conclusions}
-
-## Tim McCormack
-
-What I learned most about from this project is the power of R when it comes to qualitative analysis. The plethora of Application Programming Interfaces availabe via the R platform yields an awesome power to Data Science enthusiasts. This project has also opened my eyes to the possibilities of new data sources. With the confidence of API programming in R, the entire web becomes a potential field for data collection. This project also gave me an appreciation for how a small company operates, all of the team members wore many hats. My contributions included researching API's for market data, building functions in R to partition data frames, and merging files that contained multiple team members work. In the future I hope that I may use this project to educate Data Science comrades about the potential of Sentiment Analysis in R.
-
-## Wei Chun Tien
