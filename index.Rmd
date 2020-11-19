@@ -15,4 +15,4 @@ description: ""
 
 # Preface {-}
 
-
+This project is an exploration of language in the comments from the two most popular subreddits oriented towards the discussion of Crypto-currencies and the trading of block-chain assets. The methodologies used herein include tokenization, sentiment analysis using dictionaries, and associative visualization primarily using packages found within the tidyverse.

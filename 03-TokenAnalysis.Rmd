@@ -1,6 +1,6 @@
 # Token Analysis {#token-analysis}
 
-[In-Progress]
+This chapter contains the code for wrangling the cleaned and tokenized data into data-frames containing word frequencies and visualizing the data using the raw counts derived from this process.
 
 ```{r TA_setup}
 knitr::opts_chunk$set(message = FALSE, warning = FALSE, echo = TRUE)
@@ -21,7 +21,7 @@ srs = c("CryptoCurrency","CryptoMarkets")
 
 ## Import
 
-```{r import_submissions, include = FALSE}
+```{r import_submissions, include = TRUE, echo = FALSE}
 TknsS<- read.csv(paste0(dataDir, "/SubmTkns.csv")) 
 TknsC<- read.csv(paste0(dataDir, "/CommTkns.csv"))
 ```
@@ -29,8 +29,7 @@ TknsC<- read.csv(paste0(dataDir, "/CommTkns.csv"))
 ## Token Counts
 
 ```{r count}
-allCount <-TknsC %>%
-    group_by(subreddit) %>% #group words by affiliation label
+allCount <-TknsC %>% #group words by affiliation label
     count(word, sort = TRUE) %>%
     ungroup()
 ```
@@ -42,9 +41,10 @@ The following code show the top 25 most frequently occuring words within each su
 
 ```{r top_25}
 sr_all_n25 <- allCount %>% 
-  group_by(subreddit) %>%
   top_n(25) %>%
   ungroup()
+
+kable(sr_all_n25)
 ```
 
 ## Wordclouds
@@ -57,8 +57,6 @@ Wordclouds are then constructed using the top 50 words from each subreddit page.
 sr_allWC <- allCount %>%
   top_n(100) %>%
   mutate(prop = n / max(n))
-
-color=diverge_hcl(length(sr_allWC$prop))[rank(sr_allWC$prop)]
 ```
 
 
@@ -67,34 +65,9 @@ set.seed(29)
 ggplot(sr_allWC, aes(label = word, size = prop, color = prop)) +
     geom_text_wordcloud_area(shape = 'circle', rm_outside = TRUE) +
     scale_size_area(max_size = 30) +
-    #scale_colour_gradient2(low = "black", mid = "red4", high = "red", space = "Lab", aesthetics = "color") +
     theme_minimal()
 
 ggsave("CC_wordcloud.pdf", device = "pdf", path = "CCViz", height = 10, width = 16)
-```
-
-
-TF_IDF is a tool used to show distinct word usage across groups by taking the difference between the term frequency `tf` and inverse document frequency `idf`, ultimately revealing the tokens that are most unique to each subreddit.
-
-```{r Onegram tf-idf }
-#Create TF-IDF matrix for Controversial Submissions
-allIDF <- allCount %>%
-  bind_tf_idf(word, subreddit, n) %>% #construct tf_idf by affiliation label
-  arrange(desc(tf_idf)) %>% 
-  mutate(word = factor(word, levels = rev(unique(word))))
-```
-
-
-## TF-IDF
-
-```{r all tf_idf}
-allIDF %>%
-  group_by(subreddit) %>% 
-  top_n(10) %>% 
-  ungroup()%>%
-  ggplot(aes(word, tf_idf, fill = subreddit)) + geom_col(show.legend = FALSE) + labs(x = NULL, y = "tf-idf") + facet_wrap(~subreddit, ncol = 2, scales = "free_y") + coord_flip() + theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-ggsave("tf_idf.pdf", device = "pdf", path = "CCViz", height = 8, width = 6)
 ```
 
 
@@ -135,14 +108,6 @@ ggplot(monthCount, aes(
   scale_size_area(max_size = 5) +
   theme_minimal() +
   facet_grid(vars(month), vars(year))
-
-ggsave(
-  "CC_timeline.pdf",
-  device = "pdf",
-  path = "CCViz",
-  height = 40,
-  width = 30
-)
 ```
 
 
@@ -209,4 +174,3 @@ ggplot(curCountsbyMonth) +
 ```{r}
 write.csv(curTknsByMonth, paste0(dataDir, "/CoinTknsMonthly.csv"), row.names = FALSE)
 ```
-

@@ -60,11 +60,7 @@ pXRP["Coin"] <- "XRP"
 PricesByCoin <- rbind(pBTC, pETH, pLTC, pXRP)
 ```
 
-<<<<<<< Updated upstream
-## Coin Price/ Sentiment vs Time {.tabset}
-=======
 ## Price & Sentiment over Time
->>>>>>> Stashed changes
 
 ```{r echo=FALSE}
 
@@ -143,54 +139,31 @@ get_graph <- function(coin, coeff) {   # coin = "COIN_NAME", coeff = Value used 
 ```
 
 
-<<<<<<< Updated upstream
-### BTC Price & Sentiment over Time
-=======
 ### BTC
->>>>>>> Stashed changes
 
 ```{r}
 get_graph("BTC", 4)
 ```
 
-<<<<<<< Updated upstream
-### ETH Price & Sentiment over Time
-=======
 ### ETH
->>>>>>> Stashed changes
 
 ```{r}
 get_graph("ETH",20)
 ```
 
-<<<<<<< Updated upstream
-### LTC Price & Sentiment over Time
-=======
 ### LTC
->>>>>>> Stashed changes
 
 ```{r}
 get_graph("LTC", 19)
 ```
 
-<<<<<<< Updated upstream
-### XRP Price & Sentiment over Time
-=======
 ### XRP
->>>>>>> Stashed changes
 
 ```{r}
 get_graph("XRP", 8000)
 ```
 
-<<<<<<< Updated upstream
-
-## Who is posting the most? we should go stalk their reddit profile. {.tabset}
-
-### General
-=======
 ## User Sentiment
->>>>>>> Stashed changes
 
 ### Angriest
 Top ten angriest users
@@ -241,18 +214,12 @@ head(currSntmntTkns)
   #geom_line() +
   #facet_wrap(~Coin, scale = "free_y")
 
-<<<<<<< Updated upstream
-ggplot(sntmntByMonth, aes(x = Month, y = n, group = sentiment, color = sentiment)) +
-  geom_line() +
-  facet_wrap(~Coin)
-=======
 sBmPlot <- ggplot(sntmntByMonth, aes(x = as.Date(Month), y = n, group = sentiment, color = sentiment)) +
   geom_line() +
   scale_x_date(labels = date_format("%Y")) +
   facet_wrap(~Coin) 
 
 ggplotly(sBmPlot)
->>>>>>> Stashed changes
 ```
 
 
@@ -475,8 +442,6 @@ ggplot(data = xrp.pop.df, aes(x=xrp_m, y = X0.2, group = 1, color = sentiment))+
   geom_point() + 
   theme(axis.text.x = element_text(angle = 60, hjust = 1)) + ggtitle("Most Common Sentiment Over Time For XRP")
 ```
-<<<<<<< Updated upstream
-=======
 
 TF_IDF is a tool used to show distinct word usage across groups by taking the difference between the term frequency `tf` and inverse document frequency `idf`, ultimately revealing the tokens that are most unique to each subreddit.
 
@@ -492,4 +457,3 @@ coinIDF <- countsByCoin %>%
   arrange(desc(tf_idf)) %>% 
   mutate(word = factor(word, levels = rev(unique(word))))
 ```
->>>>>>> Stashed changes

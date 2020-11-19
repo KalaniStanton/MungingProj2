@@ -1,3 +1,47 @@
+--- 
+title: "An analysis of Cryptocurrency"
+author: "Kalani Stanton, Timothy McCormack, Carolyn Herrera, Wei Chun Tien, "
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+output_dir: "docs"
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes~
+github-repo: KalaniStanton/MungingProj2
+description: ""
+---
+--- 
+title: "An analysis of Cryptocurrency"
+author: "Kalani Stanton, Timothy McCormack, Carolyn Herrera, Wei Chun Tien, "
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+output_dir: "docs"
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes~
+github-repo: KalaniStanton/MungingProj2
+description: ""
+---
+
+# Preface {-}
+
+This project is an exploration of language in the comments from the two most popular subreddits oriented towards the discussion of Crypto-currencies and the trading of block-chain assets. The methodologies used herein include tokenization, sentiment analysis using dictionaries, and associative visualization primarily using packages found within the tidyverse.
+
+<!--chapter:end:index.Rmd-->
+
+
+# Introduction {#intro}
+
+Placeholder
+
+
+
+<!--chapter:end:01-intro.Rmd-->
+
 # Cleaning and Tokenization {#clean}
 
 ```{r clean_setup}
@@ -218,4 +262,79 @@ write.csv(SubmissionTkns, paste0(dataDir, "/SubmTkns.csv"), row.names = FALSE)
 ```{r export_comments}
 write.csv(CommTkns, paste0(dataDir, "/CommTkns.csv"), row.names = FALSE)
 ```
+
+
+<!--chapter:end:02-Clean.Rmd-->
+
+
+# Token Analysis {#token-analysis}
+
+Placeholder
+
+
+## Import
+## Token Counts
+### Most Frequent Tokens
+## Wordclouds
+### All words (Submissions and Comments)
+## Posts over time
+## Currencies
+### Assigning Identifiers
+
+<!--chapter:end:03-TokenAnalysis.Rmd-->
+
+
+# Sentiment Analysis {#sentiments}
+
+Placeholder
+
+
+## Data Shaping
+### `get_sentiments()`
+## Price & Sentiment over Time
+### BTC
+### ETH
+### LTC
+### XRP
+## User Sentiment
+### Angriest
+### Happiest
+### Saddest
+## Sentiment Distribution By Coin
+## Descriptive Statistics
+## Most Abundant Sentiment Over Time
+## Plots of Top Sentiment Over Time
+## TF-IDF
+
+<!--chapter:end:04-SentimentAnalysis.Rmd-->
+
+# Concluding Remarks {#conclusions}
+
+## Tim McCormack
+
+What I learned most about from this project is the power of R when it comes to qualitative analysis. The plethora of Application Programming Interfaces availabe via the R platform yields an awesome power to Data Science enthusiasts. This project has also opened my eyes to the possibilities of new data sources. With the confidence of API programming in R, the entire web becomes a potential field for data collection. This project also gave me an appreciation for how a small company operates, all of the team members wore many hats. My contributions included researching API's for market data, building functions in R to partition data frames, and merging files that contained multiple team members work. In the future I hope that I may use this project to educate Data Science comrades about the potential of Sentiment Analysis in R.
+
+## Wei Chun Tien
+
+<!--chapter:end:05-Comments.Rmd-->
+
+`r if (knitr:::is_html_output()) '
+# References {-}
+
+'`
+```{r, messages = FALSE, warning=FALSE}
+#install.packages("devtools")
+#devtools::install_github("neuropsychology/report")
+library(report) #Package for citing
+```
+
+## Packages Used
+
+```{r include=TRUE}
+# automatically create a bib database for R packages
+knitr::write_bib(c(
+  .packages(), 'bookdown', 'knitr', 'rmarkdown','packages.bib', "book.bib"))
+```
+
+<!--chapter:end:06-references.Rmd-->
 
