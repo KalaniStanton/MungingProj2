@@ -1,6 +1,6 @@
 --- 
 title: "An analysis of Cryptocurrency"
-author: "Kalani Stanton, Timothy McCormack, Carolyn Herrera, Wei Chun Tien, "
+author: "Kalani Stanton, Timothy McCormack, Wei Chun Tien, "
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output: bookdown::gitbook

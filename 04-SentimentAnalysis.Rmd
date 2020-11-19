@@ -28,20 +28,20 @@ nrc<- get_sentiments("nrc")
 
 `r kbl(head(nrc))`
 
-```{r}
-currSntmntTkns <- currTkns %>%
-  inner_join(nrc)
-
-sntmntByMonth <-  currSntmntTkns %>%
-  group_by(Coin, Month) %>%
-  count(sentiment) %>%
-  ungroup()
-```
+### Sentiment Counts By Coin
 
 ```{r}
-ggplot(sntmntByMonth, aes(x = Month, y = n)) +
-  geom_line(stat = "identity") +
-  facet_wrap(~Coin)
+#ggplot(sntmntByMonth, aes(x = Month, y = n, color = sentiment)) +
+  #geom_line() +
+  #facet_wrap(~Coin, scale = "free_y")
+
+sBmPlot <- ggplot(sntmntByMonth, aes(x = as.Date(Month), y = n, group = sentiment, color = sentiment)) +
+  geom_line() +
+  scale_x_date(labels = date_format("%Y")) +
+  facet_wrap(~Coin) +
+  xlab("Month") + ylab("Number of Tokens (n)") 
+
+ggplotly(sBmPlot)
 ```
 
 ```{r}
@@ -207,22 +207,6 @@ head(currSntmntTkns)
 ```
 
 
-## Sentiment Distribution By Coin
-
-```{r}
-#ggplot(sntmntByMonth, aes(x = Month, y = n, color = sentiment)) +
-  #geom_line() +
-  #facet_wrap(~Coin, scale = "free_y")
-
-sBmPlot <- ggplot(sntmntByMonth, aes(x = as.Date(Month), y = n, group = sentiment, color = sentiment)) +
-  geom_line() +
-  scale_x_date(labels = date_format("%Y")) +
-  facet_wrap(~Coin) 
-
-ggplotly(sBmPlot)
-```
-
-
 ## Descriptive Statistics
 
 ```{r}
@@ -235,11 +219,6 @@ ggplot(sntmntByMonth, aes(x = sentiment, fill = sentiment)) + geom_bar() +  ggti
 ggplot(sntmntByMonth, aes(x = Month, fill = Month)) + geom_bar() +  ggtitle("Number of Sentiment Types for Each Month")
 
 ggplot(sntmntByMonth, aes(x = sentiment, y = n, color = Coin)) + geom_point() +  ggtitle("Popularity of Each Sentiment Among Coin Type")
-
-
-
-
-
 ```
 
 
@@ -341,7 +320,7 @@ for(i in 1:eth_n){
 
 #xrp <- df[which(df$Coin == "XRP"),]
 
-eth.pop.df
+#eth.pop.df
 
 
 
@@ -424,36 +403,21 @@ xrp.pop.df
 ggplot(data = btc.pop.df, aes(x=btc_m, y = X0.2, group = 1, color = sentiment))+
   geom_line()+
   geom_point() + 
-  theme(axis.text.x = element_text(angle = 60, hjust = 1)) + ggtitle("Most Common Sentiment Over Time For BTC")
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) + ggtitle("Most Common Sentiment Over Time For BTC") + xlab("Month") + ylab("Proportion of Sentiment")
 
 ggplot(data = eth.pop.df, aes(x=eth_m, y = X0.2, group = 1, color = sentiment))+
   geom_line()+
   geom_point() + 
-  theme(axis.text.x = element_text(angle = 60, hjust = 1)) + ggtitle("Most Common Sentiment Over Time For ETH")
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) + ggtitle("Most Common Sentiment Over Time For ETH") + xlab("Month") + ylab("Proportion of Sentiment")
 
 ggplot(data = ltc.pop.df, aes(x=ltc_m, y = X0.2, group = 1, color = sentiment))+
   geom_line()+
   geom_point() + 
-  theme(axis.text.x = element_text(angle = 60, hjust = 1)) + ggtitle("Most Common Sentiment Over Time For LTC")
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) + ggtitle("Most Common Sentiment Over Time For LTC") + xlab("Month") + ylab("Proportion of Sentiment")
 
 
 ggplot(data = xrp.pop.df, aes(x=xrp_m, y = X0.2, group = 1, color = sentiment))+
   geom_line()+
   geom_point() + 
-  theme(axis.text.x = element_text(angle = 60, hjust = 1)) + ggtitle("Most Common Sentiment Over Time For XRP")
-```
-
-TF_IDF is a tool used to show distinct word usage across groups by taking the difference between the term frequency `tf` and inverse document frequency `idf`, ultimately revealing the tokens that are most unique to each subreddit.
-
-```{r Onegram tf-idf }
-countsByCoin <- currTkns %>%
-  group_by(Coin) %>%
-  count(word) %>%
-  ungroup
-
-#Create TF-IDF matrix for Controversial Submissions
-coinIDF <- countsByCoin %>%
-  bind_tf_idf(word, Coin, n) %>% #construct tf_idf by affiliation label
-  arrange(desc(tf_idf)) %>% 
-  mutate(word = factor(word, levels = rev(unique(word))))
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) + ggtitle("Most Common Sentiment Over Time For XRP") + xlab("Month") + ylab("Proportion of Sentiment")
 ```
